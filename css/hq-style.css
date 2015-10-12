@@ -1,0 +1,142 @@
+#hire-quote {
+
+}
+#hire-quote * {
+    box-sizing: border-box;
+}
+#hire-quote .postcode-wdgt {
+    width: 447px;
+    margin: 0 auto;
+    background: #262425;
+    height: 224px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0 0;
+}
+#hire-quote .postcode-wdgt h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+#hire-quote .postcode-wdgt h1 span {
+    display: block;
+    color: #DD202E;
+}
+#hire-quote .postcode-wdgt .msg {
+    color: #DD202E;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 32px;
+}
+#hire-quote .postcode-fld {
+    background: #DD202E;
+    padding: 5px 0;
+}
+#hire-quote .postcode-fld input[type=text] {
+    border: 0;
+    background: #fff;
+    width: 220px;
+}
+.hq-cat-list label {
+    cursor: pointer;
+}
+.hq-list-table table, .hq-list-table td {
+    border: 0;
+    border-bottom: #000 2px solid;
+}
+.hq-list-table thead {
+    background: #262425;
+    color: #fff;
+}
+.hq-list-table table table, .hq-list-table table table td {
+    border: 0;
+    margin: 0;
+}
+.prod_info {
+    font-size: 14px;
+    color: #DD202E;
+}
+.prod_desc {
+    font-size: 14px;
+}
+.prod_price {
+    padding: 30px 0 0;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+    line-height: 42px;
+}
+.btn-book-now {
+    float: right;
+    padding: 10px;
+    background: #DD202E;
+}
+.hq-dates {
+    font-size: 16px;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+.hq-dates label {
+    float: left;
+    width: 144px;
+    line-height: 48px;
+    display: block;
+    text-align: left;
+}
+.hq-dates input[type=text] {
+    width: 156px;
+    background: url(../images/calendar.png) no-repeat right 9px top 10px;
+}
+.hq-options label {
+    width: 150px;
+    display: inline-block;
+}
+.hq-options input[type=number] {
+    width: 50px;
+}
+.hq-final {
+    overflow: hidden;
+}
+.hq-final .odr-detail-col {
+    width: 45%;
+    float: left;
+}
+.hq-final .odr-detail-col ul {
+    font-size: 14px;
+    list-style: none;
+}
+.hq-final .odr-detail-col li {
+    border-bottom: #ccc 1px solid;
+    overflow: hidden;
+    padding: 5px 0;
+}
+.hq-final .odr-detail-col li span.term {
+    width: 45%;
+    float: left;
+    font-weight: bold;
+}
+.hq-final .odr-detail-col li span.def {
+    width: 50%;
+    float: right;
+}
+.hq-final .customer-detail-col {
+    width: 45%;
+    float: right;
+    font-size: 14px;
+}
+.hq-final .customer-detail-col input[type=text],
+.hq-final .customer-detail-col input[type=email],
+.hq-final .customer-detail-col textarea {
+    font-size: 14px;
+}
+.order-ok {
+    width: 290px;
+    font-size: 20px;
+    padding: 20px 30px;
+    background: #D1E68F;
+    color: #82AC00;
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 10px;
+}

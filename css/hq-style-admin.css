@@ -1,0 +1,50 @@
+/* Admin Styles */
+#hq-wrap {
+
+}
+#hq-wrap h1 {
+    margin-bottom: 10px;
+}
+#hq-wrap a {
+    outline: none;
+}
+#hq-wrap label span {
+    color: red;
+}
+#hq-wrap .wp-list-table td {
+    display: table-cell;
+}
+#hq-wrap .wp-list-table .actions {
+    text-align: right;
+}
+#hq-wrap .col-left {
+    width: 35%;
+    float: left;
+}
+#hq-wrap .form-field {
+    margin-bottom: 10px;
+}
+#hq-wrap .small-text {
+    width: 100px;
+}
+#hq-wrap .submit {
+    clear: both;
+}
+#hq-wrap .search-box {
+    float: right;
+}
+@media print {
+    body, .actions a {
+        visibility: hidden;
+    }
+    #adminmenumain {
+        display: none;
+    }
+    #wpcontent, #wpfooter {
+        margin-left: 0;
+    }
+    .print-this {
+        visibility: visible;
+        width: 100%;
+    }
+}
