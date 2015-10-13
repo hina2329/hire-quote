@@ -174,7 +174,8 @@ class HireQuote {
         $postcodes_table = "CREATE TABLE $this->postcodes_tbl (
             pc_id INT(5) NOT NULL AUTO_INCREMENT,
             pc_code INT(8) NOT NULL,
-            pc_name VARCHAR(100) NOT NULL,
+            pc_suburb VARCHAR(100) NOT NULL,
+			pc_state VARCHAR(100) NOT NULL,
             PRIMARY KEY (pc_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
         
