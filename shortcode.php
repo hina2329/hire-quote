@@ -80,7 +80,7 @@ class shortcode extends HireQuote {
 
                     <table>
                         <thead>
-                            <tr>
+                            <tr
                                 <th>Waste Type</th>
                                 <th>Allowed</th>
                                 <th>Not Allowed</th>
@@ -104,7 +104,7 @@ class shortcode extends HireQuote {
                         <p><strong>Additional Items</strong><br>
                             Are you disposing of any Mattresses or Tyres? If yes, please select the quantity from the boxes below:</p>
                         <?php foreach ($options as $option) { ?>
-                        <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"></p>
+                        <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"> X $<?php echo $option->opt_price; ?></p>
                         <?php } ?>
                     </div>
                     <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
@@ -129,8 +129,9 @@ class shortcode extends HireQuote {
                 <?php
                 foreach ($options as $option) {
                     $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+					$opt_cost = $opt_val * $option->opt_price;
                     ?>
-                    <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $option->opt_name . ': ' . $opt_val; ?>">
+                    <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $option->opt_name . ': ' . $opt_val . ' - $' . $opt_cost; ?>">
                 <?php } ?>
                 <p><label>Delivery Date:</label> <input type="text" name="d_date" id="hq-d-date"></p>
                 <p><label>Collection Date:</label> <input type="text" name="c_date" id="hq-c-date"></p>
@@ -243,7 +244,7 @@ class shortcode extends HireQuote {
                     </li>
                     <li>
                         <span class="term">Delivery Zone</span>
-                        <span class="def"><?php echo $postcode->pc_code . '<br>' . $postcode->pc_name; ?></span>
+                        <span class="def"><?php echo $postcode->pc_code . '<br>' . $postcode->pc_suburb . '<br>' . $postcode->pc_state; ?></span>
                     </li>
                     <li>
                         <span class="term">Rate</span>
@@ -276,12 +277,8 @@ class shortcode extends HireQuote {
                         <textarea name="cust_address" required></textarea>
                     </p>
                     <p>
-                        <label>Suburb:</label>
-                        <input type="text" name="cust_suburb">
-                    </p>
-                    <p>
                         <label>Post Code:</label>
-                        <input type="text" name="cust_postcode" value="<?php echo $postcode->pc_code . ' - ' . $postcode->pc_name; ?>" readonly>
+                        <input type="text" name="cust_postcode" value="<?php echo $postcode->pc_code . ' - ' . $postcode->pc_suburb . ' - ' . $postcode->pc_state; ?>" readonly>
                     </p>
                     <p>
                         <label>Phone: *</label>
@@ -305,7 +302,6 @@ class shortcode extends HireQuote {
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
         $cust_name = filter_input(INPUT_POST, 'cust_name');
         $cust_address = filter_input(INPUT_POST, 'cust_address', FILTER_SANITIZE_STRING);
-        $cust_suburb = filter_input(INPUT_POST, 'cust_suburb');
         $cust_postcode = filter_input(INPUT_POST, 'cust_postcode');
         $cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
         $cust_email = filter_input(INPUT_POST, 'cust_email');
@@ -316,7 +312,7 @@ class shortcode extends HireQuote {
             $opt .= $opt_val . ';';
         }
         
-        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_suburb' => $cust_suburb, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
+        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
         
         $last_id = $this->wpdb->insert_id;
         

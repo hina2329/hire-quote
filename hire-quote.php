@@ -161,6 +161,7 @@ class HireQuote {
         $options_table = "CREATE TABLE $this->options_tbl (
             opt_id INT(5) NOT NULL AUTO_INCREMENT,
             opt_name VARCHAR(100) NOT NULL,
+			opt_price INT(5) NOT NULL,
             PRIMARY KEY (opt_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
 
