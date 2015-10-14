@@ -76,6 +76,7 @@ class manage_orders extends HireQuote {
                             <td><?php echo $row->odr_status; ?></td>
                             <td class="actions">
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=view&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-visibility" title="View"></a> 
+                                <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Processed&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-thumbs-up" title="Process" onclick="return confirm('Are you sure you want to process this order?');"></a>
 <!--                                <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=form&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-edit" title="Edit"></a>-->
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Approved&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-yes" title="Approve" onclick="return confirm('Are you sure you want to approve this order?');"></a> 
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Canceled&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-no" title="Cancel" onclick="return confirm('Are you sure you want to cancel this order?');"></a>

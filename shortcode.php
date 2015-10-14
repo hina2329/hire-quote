@@ -80,7 +80,7 @@ class shortcode extends HireQuote {
 
                     <table>
                         <thead>
-                            <tr
+                            <tr>
                                 <th>Waste Type</th>
                                 <th>Allowed</th>
                                 <th>Not Allowed</th>
@@ -104,7 +104,7 @@ class shortcode extends HireQuote {
                         <p><strong>Additional Items</strong><br>
                             Are you disposing of any Mattresses or Tyres? If yes, please select the quantity from the boxes below:</p>
                         <?php foreach ($options as $option) { ?>
-                        <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"> X $<?php echo $option->opt_price; ?></p>
+                            <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"> X $<?php echo $option->opt_price; ?></p>
                         <?php } ?>
                     </div>
                     <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
@@ -129,7 +129,7 @@ class shortcode extends HireQuote {
                 <?php
                 foreach ($options as $option) {
                     $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-					$opt_cost = $opt_val * $option->opt_price;
+                    $opt_cost = $opt_val * $option->opt_price;
                     ?>
                     <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $option->opt_name . ': ' . $opt_val . ' - $' . $opt_cost; ?>">
                 <?php } ?>
@@ -209,6 +209,49 @@ class shortcode extends HireQuote {
         ?>
         <div class="hq-final">
             <h2>Order Details & Customer Details</h2>
+            
+            <div class="customer-detail-col">
+                <form method="post" action="<?php the_permalink(); ?>">
+                    <input type="hidden" name="step" value="submit_quote">
+                    <input type="hidden" name="cust_postcode" value="<?php echo $this->postcode; ?>">
+                    <input type="hidden" name="cat_id" value="<?php echo $this->cat_id; ?>">
+                    <input type="hidden" name="d_date" value="<?php echo $this->d_date; ?>">
+                    <input type="hidden" name="c_date" value="<?php echo $this->c_date; ?>">
+                    <input type="hidden" name="prf_time" value="<?php echo $this->prf_time; ?>">
+                    <input type="hidden" name="prod_id" value="<?php echo $product->prod_id; ?>">
+                    <?php
+                    foreach ($options as $option) {
+                        $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+                        ?>
+                        <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
+                    <?php } ?>
+                    <strong>Enter Your Delivery Details</strong>
+                    <p>
+                        <label>Your Name: *</label>
+                        <input type="text" name="cust_name" required>
+                    </p>
+                    <p>
+                        <label>Address: *</label>
+                        <textarea name="cust_address" required></textarea>
+                    </p>
+                    <p>
+                        <label>Post Code:</label>
+                        <input type="text" name="cust_postcode" value="<?php echo $postcode->pc_code . ' - ' . $postcode->pc_suburb . ' - ' . $postcode->pc_state; ?>" readonly>
+                    </p>
+                    <p>
+                        <label>Phone: *</label>
+                        <input type="text" name="cust_phone" required>
+                    </p>
+                    <p>
+                        <label>Email: *</label>
+                        <input type="email" name="cust_email" required>
+                    </p>
+                    <p>
+                        <button>GET A QUOTE</button>
+                    </p>
+                </form>
+            </div>
+            
             <div class="odr-detail-col">
                 <strong>Your Booking Information</strong>
                 <ul>
@@ -252,47 +295,6 @@ class shortcode extends HireQuote {
                     </li>
                 </ul>
             </div>
-            <div class="customer-detail-col">
-                <form method="post" action="<?php the_permalink(); ?>">
-                    <input type="hidden" name="step" value="submit_quote">
-                    <input type="hidden" name="cust_postcode" value="<?php echo $this->postcode; ?>">
-                    <input type="hidden" name="cat_id" value="<?php echo $this->cat_id; ?>">
-                    <input type="hidden" name="d_date" value="<?php echo $this->d_date; ?>">
-                    <input type="hidden" name="c_date" value="<?php echo $this->c_date; ?>">
-                    <input type="hidden" name="prf_time" value="<?php echo $this->prf_time; ?>">
-                    <input type="hidden" name="prod_id" value="<?php echo $product->prod_id; ?>">
-                    <?php
-                    foreach ($options as $option) {
-                        $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-                        ?>
-                        <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
-                    <?php } ?>
-                    <strong>Enter Your Delivery Details</strong>
-                    <p>
-                        <label>Your Name: *</label>
-                        <input type="text" name="cust_name" required>
-                    </p>
-                    <p>
-                        <label>Address: *</label>
-                        <textarea name="cust_address" required></textarea>
-                    </p>
-                    <p>
-                        <label>Post Code:</label>
-                        <input type="text" name="cust_postcode" value="<?php echo $postcode->pc_code . ' - ' . $postcode->pc_suburb . ' - ' . $postcode->pc_state; ?>" readonly>
-                    </p>
-                    <p>
-                        <label>Phone: *</label>
-                        <input type="text" name="cust_phone" required>
-                    </p>
-                    <p>
-                        <label>Email: *</label>
-                        <input type="email" name="cust_email" required>
-                    </p>
-                    <p>
-                        <button>GET A QUOTE</button>
-                    </p>
-                </form>
-            </div>
         </div>
         <?php
     }
@@ -306,18 +308,18 @@ class shortcode extends HireQuote {
         $cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
         $cust_email = filter_input(INPUT_POST, 'cust_email');
         $opt = '';
-        
+
         foreach ($options as $option) {
             $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
             $opt .= $opt_val . ';';
         }
-        
+
         $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
-        
+
         $last_id = $this->wpdb->insert_id;
-        
-        $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id,'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved'));
-        
+
+        $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id, 'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved'));
+
         echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
     }
 

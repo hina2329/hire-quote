@@ -3,7 +3,7 @@
 // Settings Class
 class settings extends HireQuote {
 
-    public $set_add_day;
+    public $setting;
 
     public function __construct() {
         parent::__construct();
@@ -25,7 +25,9 @@ class settings extends HireQuote {
                 <?php settings_fields('hq_settings'); ?>
                 <div class="form-field">
                     <label for="add_day">Additional Day Price</label><br>
-                    $ <input name="hq_settings[add_day]" id="add_day" type="text" value="<?php echo $this->setting->add_day; ?>" size="40" class="small-text">
+                    $ <input name="hq_settings[add_day]" id="add_day" type="text" value="<?php echo $this->setting->add_day; ?>" class="small-text">
+                    <label for="hq_email">Additional Day Price</label><br>
+                    $ <input name="hq_settings[hq_email]" id="hq_email" type="text" value="<?php echo $this->setting->hq_email; ?>" >
                 </div>
                 <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Settings"></p>
             </form>

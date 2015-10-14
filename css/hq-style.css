@@ -98,10 +98,6 @@
 .hq-final {
     overflow: hidden;
 }
-.hq-final .odr-detail-col {
-    width: 45%;
-    float: left;
-}
 .hq-final .odr-detail-col ul {
     font-size: 14px;
     list-style: none;
@@ -119,11 +115,6 @@
 .hq-final .odr-detail-col li span.def {
     width: 50%;
     float: right;
-}
-.hq-final .customer-detail-col {
-    width: 45%;
-    float: right;
-    font-size: 14px;
 }
 .hq-final .customer-detail-col input[type=text],
 .hq-final .customer-detail-col input[type=email],
