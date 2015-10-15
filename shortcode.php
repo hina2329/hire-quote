@@ -104,7 +104,7 @@ class shortcode extends HireQuote {
                         <p><strong>Additional Items</strong><br>
                             Are you disposing of any Mattresses or Tyres? If yes, please select the quantity from the boxes below:</p>
                         <?php foreach ($options as $option) { ?>
-                            <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"> X $<?php echo $option->opt_price; ?></p>
+                            <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"></p>
                         <?php } ?>
                     </div>
                     <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
@@ -129,9 +129,8 @@ class shortcode extends HireQuote {
                 <?php
                 foreach ($options as $option) {
                     $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-                    $opt_cost = $opt_val * $option->opt_price;
                     ?>
-                    <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $option->opt_name . ': ' . $opt_val . ' - $' . $opt_cost; ?>">
+                    <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
                 <?php } ?>
                 <p><label>Delivery Date:</label> <input type="text" name="d_date" id="hq-d-date"></p>
                 <p><label>Collection Date:</label> <input type="text" name="c_date" id="hq-c-date"></p>
@@ -268,35 +267,35 @@ class shortcode extends HireQuote {
                         <span class="term">No of Days: <?php echo $diff->format('%a'); ?></span>
                         <span class="def">$<?php echo number_format($diff->format('%a') * $this->setting->add_day); ?></span>
                     </li>
-                    <li>
-                        <span class="term">Waste Type</span>
-                        <span class="def"><?php echo $cat->cat_name; ?></span>
-                    </li>
-                    <li><span class="term">Additional Items</span>
-                        <span class="def">
+                    <li><span class="term">Add Ons:<br>
                             <?php
                             foreach ($options as $option) {
                                 $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-                                ?>
-                                <?php echo $opt_val; ?><br>
-                            <?php } ?>
+                                echo $option->opt_name . ': ' . $opt_val . '<br>';
+                            }
+                            ?>
+                        </span>
+                        <span class="def">
+                            <br>
+                            <?php
+                            $opt_t_cost = '';
+                            foreach ($options as $option) {
+                                $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+                                echo '$' . $opt_val * $option->opt_price . '<br>';
+                                $opt_t_cost += $opt_val * $option->opt_price;
+                            }
+                            ?>
                         </span>
                     </li>
                     <li>
-                        <span class="term">Delivery Date</span>
-                        <span class="def"><?php echo $this->d_date; ?></span>
+                        <span class="term">&nbsp;</span>
+                        <span class="def">&nbsp;</span>
                     </li>
                     <li>
-                        <span class="term">Collection Date</span>
-                        <span class="def"><?php echo $this->c_date ?></span>
-                    </li>
-                    <li>
-                        <span class="term">Preferred Time</span>
-                        <span class="def"><?php echo $this->prf_time; ?></span>
-                    </li>
-                    <li>
-                        <span class="term">Delivery Zone</span>
-                        <span class="def"><?php echo $postcode->pc_code . '<br>' . $postcode->pc_suburb . '<br>' . $postcode->pc_state; ?></span>
+                        <span class="term">TOTAL:</span>
+                        <span class="def">
+                            <?php // MISBAH PLEASE CALCULATE ALL HERE ?>
+                        </span>
                     </li>
                 </ul>
             </div>
