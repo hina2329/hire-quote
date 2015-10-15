@@ -203,6 +203,7 @@ class shortcode extends HireQuote {
     public function final_form() {
         $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
+        $cats = $this->wpdb->get_results("SELECT * FROM $this->categories_tbl");
         $postcode = $this->wpdb->get_row("SELECT * FROM $this->postcodes_tbl WHERE pc_code = $this->postcode");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
 
@@ -210,6 +211,7 @@ class shortcode extends HireQuote {
         $date1 = date_create($this->d_date);
         $date2 = date_create($this->c_date);
         $diff = date_diff($date1, $date2);
+        $add_days_price = ($diff->format('%a') - 1) * $this->setting->add_day;
         ?>
         <div class="hq-final">
             <h2>Order Details & Customer Details</h2>
@@ -264,8 +266,8 @@ class shortcode extends HireQuote {
                         <span class="def">$<?php echo $product->prod_rate; ?></span>
                     </li>
                     <li>
-                        <span class="term">No of Days: <?php echo $diff->format('%a'); ?></span>
-                        <span class="def">$<?php echo number_format($diff->format('%a') * $this->setting->add_day); ?></span>
+                        <span class="term">No of Days: <?php echo $diff->format('%a') - 1; ?></span>
+                        <span class="def">$<?php echo number_format($add_days_price); ?></span>
                     </li>
                     <li><span class="term">Add Ons:<br>
                             <?php
@@ -282,6 +284,7 @@ class shortcode extends HireQuote {
                             foreach ($options as $option) {
                                 $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
                                 echo '$' . $opt_val * $option->opt_price . '<br>';
+                                $opt_t_cost += $opt_val * $option->opt_price;
                             }
                             ?>
                         </span>
@@ -293,11 +296,76 @@ class shortcode extends HireQuote {
                     <li>
                         <span class="term">TOTAL:</span>
                         <span class="def">
-                            <?php // MISBAH PLEASE CALCULATE ALL HERE ?>
+                            <?php
+                            $total = $opt_t_cost + $product->prod_rate + $add_days_price;
+                            $gst = ($total * 10) / 100;
+                            ?>
+                            $<?php echo number_format($total); ?>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="term">GST: (10%)</span>
+                        <span class="def">
+                            $<?php echo $gst; ?>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="term">Total Payable:</span>
+                        <span class="def">
+                            $<?php echo ($total + $gst); ?>
                         </span>
                     </li>
                 </ul>
             </div>
+
+            <h6>Special Instructions:</h6> 
+            <p>NOTE: You have selected ‘Garden Waste’ as your waste type. Please note that only following Garden Waste is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection. Please see our ‘Terms and Conditions’ of hire.</p>
+            <p>Payment Status: Paypal/CC/Bank</p>
+
+            <hr>
+
+            <h6>Rate Chart:</h6>
+
+                <table cellspacing="0" id="hq-rate-list">
+                    <thead>
+                        <tr>
+                            <?php foreach ($cats as $c) { ?>
+                                <th><?php echo $c->cat_name; ?></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <?php foreach ($cats as $c) { ?>
+                                <td>
+                                    <?php
+                                    $products = $this->wpdb->get_results("SELECT * FROM $this->products_tbl WHERE prod_cat = $c->cat_id");
+                                    foreach ($products as $prod) {
+                                        echo $prod->prod_name . ' - <strong>$' . $prod->prod_rate . '</strong><hr>';
+                                    }
+                                    ?>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                    </tbody>
+                </table>
+                
+
+            <hr>
+
+            <div class="hq-addons">
+                <strong>OPTIONAL ADD Ons:</strong>
+                <?php
+                foreach ($options as $opt) {
+                    echo $opt->opt_name . ': $' . $opt->opt_price . ' | ';
+                }
+                ?>
+            </div>
+
+            <p><strong>Payments:</strong><br>
+                Paypal, Bank Payment and Credit Card integration
+            </p>
+
         </div>
         <?php
     }
