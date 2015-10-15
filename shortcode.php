@@ -206,10 +206,15 @@ class shortcode extends HireQuote {
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
         $postcode = $this->wpdb->get_row("SELECT * FROM $this->postcodes_tbl WHERE pc_code = $this->postcode");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
+
+        // Number of days
+        $date1 = date_create($this->d_date);
+        $date2 = date_create($this->c_date);
+        $diff = date_diff($date1, $date2);
         ?>
         <div class="hq-final">
             <h2>Order Details & Customer Details</h2>
-            
+
             <div class="customer-detail-col">
                 <form method="post" action="<?php the_permalink(); ?>">
                     <input type="hidden" name="step" value="submit_quote">
@@ -251,13 +256,17 @@ class shortcode extends HireQuote {
                     </p>
                 </form>
             </div>
-            
+
             <div class="odr-detail-col">
-                <strong>Your Booking Information</strong>
+                <strong>Order Description</strong>
                 <ul>
                     <li>
-                        <span class="term">Bin Size</span>
-                        <span class="def"><?php echo $product->prod_name; ?></span>
+                        <span class="term">Bin Size: <?php echo $product->prod_name; ?></span>
+                        <span class="def">$<?php echo $product->prod_rate; ?></span>
+                    </li>
+                    <li>
+                        <span class="term">No of Days: <?php echo $diff->format('%a'); ?></span>
+                        <span class="def">$<?php echo number_format($diff->format('%a') * $this->setting->add_day); ?></span>
                     </li>
                     <li>
                         <span class="term">Waste Type</span>
@@ -288,10 +297,6 @@ class shortcode extends HireQuote {
                     <li>
                         <span class="term">Delivery Zone</span>
                         <span class="def"><?php echo $postcode->pc_code . '<br>' . $postcode->pc_suburb . '<br>' . $postcode->pc_state; ?></span>
-                    </li>
-                    <li>
-                        <span class="term">Rate</span>
-                        <span class="def">$<?php echo $product->prod_rate; ?></span>
                     </li>
                 </ul>
             </div>

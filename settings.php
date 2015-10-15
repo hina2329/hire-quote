@@ -3,13 +3,8 @@
 // Settings Class
 class settings extends HireQuote {
 
-    public $setting;
-
     public function __construct() {
         parent::__construct();
-
-        // Getting plugin settings
-        $this->setting = (object) get_option('hq_settings');
     }
 
     // Iniating main method to display settings

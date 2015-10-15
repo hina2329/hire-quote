@@ -20,6 +20,7 @@ class HireQuote {
     protected $postcodes_tbl;
     protected $orders_tbl;
     protected $customers_tbl;
+    public $setting;
 
     public function __construct() {
 
@@ -35,6 +36,9 @@ class HireQuote {
         $this->postcodes_tbl = $this->wpdb->prefix . 'hq_postcodes';
         $this->orders_tbl = $this->wpdb->prefix . 'hq_orders';
         $this->customers_tbl = $this->wpdb->prefix . 'hq_customers';
+        
+        // Getting plugin settings
+        $this->setting = (object) get_option('hq_settings');
 
         // User HTTP request for class
         $this->page = filter_input(INPUT_GET, 'page');
