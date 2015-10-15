@@ -282,7 +282,6 @@ class shortcode extends HireQuote {
                             foreach ($options as $option) {
                                 $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
                                 echo '$' . $opt_val * $option->opt_price . '<br>';
-                                $opt_t_cost += $opt_val * $option->opt_price;
                             }
                             ?>
                         </span>
