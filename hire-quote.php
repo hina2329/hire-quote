@@ -36,7 +36,7 @@ class HireQuote {
         $this->postcodes_tbl = $this->wpdb->prefix . 'hq_postcodes';
         $this->orders_tbl = $this->wpdb->prefix . 'hq_orders';
         $this->customers_tbl = $this->wpdb->prefix . 'hq_customers';
-        
+
         // Getting plugin settings
         $this->setting = (object) get_option('hq_settings');
 
@@ -165,7 +165,7 @@ class HireQuote {
         $options_table = "CREATE TABLE $this->options_tbl (
             opt_id INT(5) NOT NULL AUTO_INCREMENT,
             opt_name VARCHAR(100) NOT NULL,
-			opt_price INT(5) NOT NULL,
+	    opt_price INT(5) NOT NULL,
             PRIMARY KEY (opt_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
 
@@ -180,10 +180,10 @@ class HireQuote {
             pc_id INT(5) NOT NULL AUTO_INCREMENT,
             pc_code INT(8) NOT NULL,
             pc_suburb VARCHAR(100) NOT NULL,
-			pc_state VARCHAR(100) NOT NULL,
+            pc_state VARCHAR(100) NOT NULL,
             PRIMARY KEY (pc_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
-        
+
         $customers_table = "CREATE TABLE $this->customers_tbl (
             cust_id INT(5) NOT NULL AUTO_INCREMENT,
             cust_name VARCHAR(100)NOT NULL,
@@ -194,7 +194,7 @@ class HireQuote {
             cust_email VARCHAR(100) NOT NULL,
             PRIMARY KEY (cust_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
-        
+
         $orders_table = "CREATE TABLE $this->orders_tbl (
             odr_id INT(5) NOT NULL AUTO_INCREMENT,
             odr_cust_id INT(5) NOT NULL,
@@ -206,6 +206,7 @@ class HireQuote {
             odr_pfr_time VARCHAR(2) NOT NULL,
             odr_postcode INT(8) NOT NULL,
             odr_status VARCHAR(100) NOT NULL,
+            odr_full LONGTEXT NOT NULL,
             PRIMARY KEY (odr_id),
             FOREIGN KEY (odr_cust_id) REFERENCES $this->customers_tbl(cust_id)
         ) COLLATE = 'utf8_general_ci', ENGINE = 'InnoDB';";
@@ -232,7 +233,6 @@ class HireQuote {
         dbDelta($customers_table);
         dbDelta($orders_table);
         dbDelta($products_table);
-        
     }
 
 }

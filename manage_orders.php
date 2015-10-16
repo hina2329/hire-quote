@@ -19,7 +19,7 @@ class manage_orders extends HireQuote {
                 <input type="search" id="search-input" name="s" value="">
                 <input type="submit" id="search-submit" class="button" value="Search Orders">
             </form>
-        <?php echo get_admin_page_title(); ?>
+            <?php echo get_admin_page_title(); ?>
         </h1>
 
         <?php $this->notify('Order'); ?>
@@ -77,7 +77,7 @@ class manage_orders extends HireQuote {
                             <td class="actions">
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=view&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-visibility" title="View"></a> 
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Processed&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-thumbs-up" title="Process" onclick="return confirm('Are you sure you want to process this order?');"></a>
-<!--                                <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=form&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-edit" title="Edit"></a>-->
+                <!--                                <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=form&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-edit" title="Edit"></a>-->
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Approved&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-yes" title="Approve" onclick="return confirm('Are you sure you want to approve this order?');"></a> 
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Canceled&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-no" title="Cancel" onclick="return confirm('Are you sure you want to cancel this order?');"></a>
                             </td>
@@ -122,23 +122,7 @@ class manage_orders extends HireQuote {
                 </thead>
 
                 <tbody id="the-list">
-                    <tr><td>Order No:</td><td><?php echo $odr->odr_id; ?></td></tr>
-                    <tr><td>Product:</td><td><?php echo $product->prod_name; ?></td></tr>
-                    <tr><td>Category:</td><td><?php echo $cat->cat_name; ?></td></tr>
-                    <tr><td>Additional Items:</td>
-                        <td>
-                            <?php
-                            for ($i = 0; $i < $opt_count; $i++) {
-                                echo $opt[$i] . '<br>';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                    <tr><td>Delivery Date:</td><td><?php echo $odr->odr_d_date; ?></td></tr>
-                    <tr><td>Collection Date:</td><td><?php echo $odr->odr_c_date; ?></td></tr>
-                    <tr><td>Preferred Time:</td><td><?php echo $odr->odr_pfr_time; ?></td></tr>
-                    <tr><td>Order Status:</td><td><?php echo $odr->odr_status; ?></td></tr>
-                    <tr><td>Customer Name:</td><td><?php echo $customer->cust_name; ?></td></tr>
+                    <tr><td colspan="2"><?php echo $odr->odr_full; ?></td></tr>
                 </tbody>
 
             </table>

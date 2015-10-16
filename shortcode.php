@@ -11,6 +11,8 @@ class shortcode extends HireQuote {
     public $d_date;
     public $c_date;
     public $prf_time;
+    public $add_days_price;
+    public $diff;
 
     public function __construct() {
         parent::__construct();
@@ -24,6 +26,12 @@ class shortcode extends HireQuote {
         $this->d_date = filter_input(INPUT_POST, 'd_date');
         $this->c_date = filter_input(INPUT_POST, 'c_date');
         $this->prf_time = filter_input(INPUT_POST, 'prf_time');
+
+        // Number of days
+        $date1 = date_create($this->d_date);
+        $date2 = date_create($this->c_date);
+        $this->diff = date_diff($date1, $date2);
+        $this->add_days_price = ($this->diff->format('%a') - 1) * $this->setting->add_day;
 
         if (isset($this->step) && $this->step == 'display_categories') {
             $this->display_categories();
@@ -202,16 +210,9 @@ class shortcode extends HireQuote {
     // Final form
     public function final_form() {
         $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
-        $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
         $cats = $this->wpdb->get_results("SELECT * FROM $this->categories_tbl");
         $postcode = $this->wpdb->get_row("SELECT * FROM $this->postcodes_tbl WHERE pc_code = $this->postcode");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
-
-        // Number of days
-        $date1 = date_create($this->d_date);
-        $date2 = date_create($this->c_date);
-        $diff = date_diff($date1, $date2);
-        $add_days_price = ($diff->format('%a') - 1) * $this->setting->add_day;
         ?>
         <div class="hq-final">
             <h2>Order Details & Customer Details</h2>
@@ -266,8 +267,8 @@ class shortcode extends HireQuote {
                         <span class="def">$<?php echo $product->prod_rate; ?></span>
                     </li>
                     <li>
-                        <span class="term">No of Days: <?php echo $diff->format('%a') - 1; ?></span>
-                        <span class="def">$<?php echo number_format($add_days_price); ?></span>
+                        <span class="term">No of Days: <?php echo $this->diff->format('%a') - 1; ?></span>
+                        <span class="def">$<?php echo number_format($this->add_days_price); ?></span>
                     </li>
                     <li><span class="term">Add Ons:<br>
                             <?php
@@ -312,7 +313,7 @@ class shortcode extends HireQuote {
                     <li>
                         <span class="term">Total Payable:</span>
                         <span class="def">
-                            $<?php echo ($total + $gst); ?>
+                            $<?php echo number_format(($total + $gst)); ?>
                         </span>
                     </li>
                 </ul>
@@ -326,30 +327,30 @@ class shortcode extends HireQuote {
 
             <h6>Rate Chart:</h6>
 
-                <table cellspacing="0" id="hq-rate-list">
-                    <thead>
-                        <tr>
-                            <?php foreach ($cats as $c) { ?>
-                                <th><?php echo $c->cat_name; ?></th>
-                            <?php } ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <?php foreach ($cats as $c) { ?>
-                                <td>
-                                    <?php
-                                    $products = $this->wpdb->get_results("SELECT * FROM $this->products_tbl WHERE prod_cat = $c->cat_id");
-                                    foreach ($products as $prod) {
-                                        echo $prod->prod_name . ' - <strong>$' . $prod->prod_rate . '</strong><hr>';
-                                    }
-                                    ?>
-                                </td>
-                            <?php } ?>
-                        </tr>
-                    </tbody>
-                </table>
-                
+            <table cellspacing="0" id="hq-rate-list">
+                <thead>
+                    <tr>
+                        <?php foreach ($cats as $c) { ?>
+                            <th><?php echo $c->cat_name; ?></th>
+                        <?php } ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <?php foreach ($cats as $c) { ?>
+                            <td>
+                                <?php
+                                $products = $this->wpdb->get_results("SELECT * FROM $this->products_tbl WHERE prod_cat = $c->cat_id");
+                                foreach ($products as $prod) {
+                                    echo $prod->prod_name . ' - <strong>$' . $prod->prod_rate . '</strong><hr>';
+                                }
+                                ?>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                </tbody>
+            </table>
+
 
             <hr>
 
@@ -372,6 +373,7 @@ class shortcode extends HireQuote {
 
     // Get Quote
     public function submit_quote() {
+        $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
         $cust_name = filter_input(INPUT_POST, 'cust_name');
         $cust_address = filter_input(INPUT_POST, 'cust_address', FILTER_SANITIZE_STRING);
@@ -385,11 +387,112 @@ class shortcode extends HireQuote {
             $opt .= $opt_val . ';';
         }
 
+        // Order details
+        $odr_detail = '<div class="hq-final">';
+        $odr_detail .= '<h2>Order Details & Customer Details</h2>';
+        $odr_detail .= '<div class="customer-detail-col">';
+        $odr_detail .= '<strong>Delivery Details</strong>
+                    <p>
+                        <label>Your Name:</label>
+                        ' . $cust_name . '
+                    </p>
+                    <p>
+                        <label>Address:</label>
+                        ' . $cust_address . '
+                    </p>
+                    <p>
+                        <label>Post Code:</label>
+                        ' . $cust_postcode . '
+                    </p>
+                    <p>
+                        <label>Phone:</label>
+                        ' . $cust_phone . '
+                    </p>
+                    <p>
+                        <label>Email:</label>
+                        ' . $cust_email . '
+                    </p>';
+        $odr_detail .= '</div>';
+        $odr_detail .= '<div class="odr-detail-col">';
+        $odr_detail .= '<strong>Order Description</strong>
+                <ul>
+                    <li>
+                        <span class="term">Bin Size: ' . $product->prod_name . '</span>
+                        <span class="def">$' . $product->prod_rate . '</span>
+                    </li>
+                    <li>
+                        <span class="term">No of Days: ' . ($this->diff->format('%a') - 1) . '</span>
+                        <span class="def">$' . number_format($this->add_days_price) . '</span>
+                    </li>
+                    <li><span class="term">Add Ons:<br>';
+        foreach ($options as $option) {
+            $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+            $odr_detail .= $option->opt_name . ': ' . $opt_val . '<br>';
+        }
+        $odr_detail .= '</span>
+                        <span class="def">
+                            <br>';
+        $opt_t_cost = '';
+        foreach ($options as $option) {
+            $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+            $odr_detail .= '$' . $opt_val * $option->opt_price . '<br>';
+            $opt_t_cost += $opt_val * $option->opt_price;
+        }
+
+        $odr_detail .= '</span>
+                    </li>
+                    <li>
+                        <span class="term">&nbsp;</span>
+                        <span class="def">&nbsp;</span>
+                    </li>
+                    <li>
+                        <span class="term">TOTAL:</span>
+                        <span class="def">';
+
+        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
+        $gst = ($total * 10) / 100;
+
+        $odr_detail .= '$' . number_format($total) . '
+                        </span>
+                    </li>
+                    <li>
+                        <span class="term">GST: (10%)</span>
+                        <span class="def">
+                            $' . $gst . '
+                        </span>
+                    </li>
+                    <li>
+                        <span class="term">Total Payable:</span>
+                        <span class="def">
+                            $' . number_format(($total + $gst)) . '
+                        </span>
+                    </li>
+                </ul>
+            </div>';
+        $odr_detail .= '</div>';
+        $odr_detail .= '</div>';
+
+
         $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
 
         $last_id = $this->wpdb->insert_id;
 
-        $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id, 'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved'));
+        $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id, 'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved', 'odr_full' => $odr_detail));
+
+        // User header
+        $user_headers = "MIME-Version: 1.0" . "\r\n";
+        $user_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $user_headers .= 'From: <' . $cust_email . '>' . "\r\n";
+        
+        // Admin header
+        $admin_headers = "MIME-Version: 1.0" . "\r\n";
+        $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $admin_headers .= 'From: <' . $this->setting->hq_email . '>' . "\r\n";
+
+        // Mail
+        wp_mail($this->setting->hq_email, 'New order has been placed!', $odr_detail, $user_headers);
+        wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
+
 
         echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
     }
