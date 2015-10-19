@@ -411,8 +411,8 @@ class shortcode extends HireQuote {
 
                         <h6>Payment Method:</h6> 
                         <p>
-                            <label><input type="radio" name="p_method" value="paypal" checked> PayPal</label><br>
-                            <label><input type="radio" name="p_method" value="wire"> Bank Transfer (EFT)</label>
+                            <label><input type="radio" name="p_method" value="PayPal" checked> PayPal</label><br>
+                            <label><input type="radio" name="p_method" value="Bank Transfer (EFT)"> Bank Transfer (EFT)</label>
                         </p>
 
                         <p>
@@ -563,7 +563,7 @@ class shortcode extends HireQuote {
 
         echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
         
-        if ($this->p_method == 'paypal') {
+        if ($this->p_method == 'PayPal') {
             wp_redirect('https://www.paypal.com/au/webapps/mpp/home');
         }
         
