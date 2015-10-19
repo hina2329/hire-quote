@@ -36,24 +36,6 @@
 .hq-final {
     overflow: hidden;
 }
-.hq-final .odr-detail-col ul {
-    font-size: 14px;
-    list-style: none;
-}
-.hq-final .odr-detail-col li {
-    border-bottom: #ccc 1px solid;
-    overflow: hidden;
-    padding: 5px 0;
-}
-.hq-final .odr-detail-col li span.term {
-    width: 45%;
-    float: left;
-    font-weight: bold;
-}
-.hq-final .odr-detail-col li span.def {
-    width: 50%;
-    float: right;
-}
 @media print {
     body, .actions a {
         visibility: hidden;
@@ -67,5 +49,6 @@
     .print-this {
         visibility: visible;
         width: 100%;
+        margin: -0.9in 0 0 0;
     }
 }

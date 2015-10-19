@@ -5,37 +5,36 @@
     box-sizing: border-box;
 }
 #hire-quote .postcode-wdgt {
-    width: 447px;
-    margin: 0 auto;
-    background: #262425;
-    height: 224px;
-    border-radius: 10px;
-    color: #fff;
-    text-align: center;
     padding: 5px 0 0;
 }
-#hire-quote .postcode-wdgt h1 {
-    font-size: 20px;
-    margin-bottom: 20px;
+#hire-quote h1 {
+    font-size: 25px;
+    margin-bottom: 0;
+    background: #EEEEEE;
+    border: #cccccc 1px solid;
+    padding: 30px;
 }
-#hire-quote .postcode-wdgt h1 span {
-    display: block;
-    color: #DD202E;
+.hq-wrap {
+    border: #cccccc 1px solid;
+    border-top: 0;
+    padding: 30px;
+    overflow: hidden;
+    font-size: 14px;
+}
+.hq-wrap button {
+    float: right;
 }
 #hire-quote .postcode-wdgt .msg {
     color: #DD202E;
     font-size: 18px;
     font-weight: bold;
     line-height: 32px;
+    margin: 0 0 20px;
 }
-#hire-quote .postcode-fld {
-    background: #DD202E;
-    padding: 5px 0;
-}
-#hire-quote .postcode-fld input[type=text] {
-    border: 0;
-    background: #fff;
-    width: 220px;
+#hire-quote input[type=text] {
+    border: #CCCCCC 1px solid;
+    width: 100%;
+    margin: 0 0 30px;
 }
 .hq-cat-list label {
     cursor: pointer;
@@ -48,9 +47,17 @@
     background: #262425;
     color: #fff;
 }
+.hq-list-table td {
+    padding: 20px 0;
+}
 .hq-list-table table table, .hq-list-table table table td {
     border: 0;
     margin: 0;
+}
+.hq-total {
+    background: #000;
+    color: #fff;
+    font-weight: bold;
 }
 .prod_info {
     font-size: 14px;
@@ -83,6 +90,7 @@
     line-height: 48px;
     display: block;
     text-align: left;
+    font-weight: bold;
 }
 .hq-dates input[type=text] {
     width: 156px;
@@ -98,23 +106,8 @@
 .hq-final {
     overflow: hidden;
 }
-.hq-final .odr-detail-col ul {
-    font-size: 14px;
-    list-style: none;
-}
-.hq-final .odr-detail-col li {
-    border-bottom: #ccc 1px solid;
-    overflow: hidden;
-    padding: 5px 0;
-}
-.hq-final .odr-detail-col li span.term {
-    width: 45%;
-    float: left;
-    font-weight: bold;
-}
-.hq-final .odr-detail-col li span.def {
-    width: 50%;
-    float: right;
+.hq-price {
+    text-align: right;
 }
 .hq-final .customer-detail-col input[type=text],
 .hq-final .customer-detail-col input[type=email],

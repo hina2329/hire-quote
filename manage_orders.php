@@ -122,7 +122,7 @@ class manage_orders extends HireQuote {
                 </thead>
 
                 <tbody id="the-list">
-                    <tr><td colspan="2"><?php echo $odr->odr_full; ?></td></tr>
+                    <tr><td colspan="2" style="background: #fff;"><?php echo $odr->odr_full; ?></td></tr>
                 </tbody>
 
             </table>
