@@ -19,6 +19,7 @@ class shortcode extends HireQuote {
     public $cust_phone;
     public $cust_email;
     public $p_method;
+    public $cust_city;
 
     public function __construct() {
         parent::__construct();
@@ -38,6 +39,7 @@ class shortcode extends HireQuote {
         $this->cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
         $this->cust_email = filter_input(INPUT_POST, 'cust_email');
         $this->p_method = filter_input(INPUT_POST, 'p_method');
+        $this->cust_city = filter_input(INPUT_POST, 'cust_city');
 
         // Number of days
         $date1 = date_create($this->d_date);
@@ -265,6 +267,10 @@ class shortcode extends HireQuote {
                                 <textarea name="cust_address" required></textarea>
                             </p>
                             <p>
+                                <label>City/Suburb:</label>
+                                <input type="text" name="cust_city" required>
+                            </p>
+                            <p>
                                 <label>Post Code:</label>
                                 <input type="text" name="cust_postcode" value="<?php echo $postcode->pc_code . ' - ' . $postcode->pc_suburb . ' - ' . $postcode->pc_state; ?>" readonly>
                             </p>
@@ -310,6 +316,7 @@ class shortcode extends HireQuote {
                         <input type="hidden" name="cust_address" value="<?php echo $this->cust_address; ?>">
                         <input type="hidden" name="cust_phone" value="<?php echo $this->cust_phone; ?>">
                         <input type="hidden" name="cust_postcode" value="<?php echo $this->cust_postcode; ?>">
+                        <input type="hidden" name="cust_city" value="<?php echo $this->cust_city; ?>">
                         <?php
                         foreach ($options as $option) {
                             $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
@@ -331,6 +338,10 @@ class shortcode extends HireQuote {
                             <p>
                                 <label><strong>Address:</strong></label>
                                 <?php echo $this->cust_address; ?>
+                            </p>
+                            <p>
+                                <label><strong>City/Suburb:</strong></label>
+                                <?php echo $this->cust_city; ?>
                             </p>
                             <p>
                                 <label><strong>Post Code:</strong></label>
@@ -360,7 +371,7 @@ class shortcode extends HireQuote {
                                 <tr>
                                     <td><strong>No. of Days:</strong></td>
                                     <td><?php echo $this->diff->format('%a') - 1; ?></td>
-                                    <td class="hq-price">$<?php echo number_format($this->add_days_price); ?></td>
+                                    <td class="hq-price">$<?php echo number_format($this->add_days_price, 2); ?></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Add Ons:</strong></td>
@@ -395,9 +406,9 @@ class shortcode extends HireQuote {
                                         $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
                                         $gst = ($total * 10) / 100;
                                         ?>
-                                        $<?php echo number_format($total); ?><br>
-                                        $<?php echo number_format($gst); ?><br>
-                                        $<?php echo number_format(($total + $gst)); ?>
+                                        $<?php echo number_format($total, 2); ?><br>
+                                        $<?php echo number_format($gst, 2); ?><br>
+                                        $<?php echo number_format(($total + $gst), 2); ?>
                                     </td>
                                 </tr>
                             </table>
@@ -463,6 +474,10 @@ class shortcode extends HireQuote {
                                 ' . $this->cust_address . '
                             </p>
                             <p>
+                                <label><strong>City/Suburb:</strong></label>
+                                ' . $this->cust_city . '
+                            </p>
+                            <p>
                                 <label><strong>Post Code:</strong></label>
                                 ' . $this->cust_postcode . '
                             </p>
@@ -487,7 +502,7 @@ class shortcode extends HireQuote {
                                 <tr>
                                     <td><strong>No. of Days:</strong></td>
                                     <td>' . ($this->diff->format('%a') - 1) . '</td>
-                                    <td class="hq-price" style="text-align: right;">$' . number_format($this->add_days_price) . '</td>
+                                    <td class="hq-price" style="text-align: right;">$' . number_format($this->add_days_price, 2) . '</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Add Ons:</strong></td>
@@ -522,9 +537,9 @@ class shortcode extends HireQuote {
                                         $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
                                         $gst = ($total * 10) / 100;
                                         
-                                        $odr_detail .= '$' . number_format($total) . '<br>
-                                        $' . number_format($gst) . '<br>
-                                        $' . number_format(($total + $gst)) .'
+                                        $odr_detail .= '$' . number_format($total, 2) . '<br>
+                                        $' . number_format($gst, 2) . '<br>
+                                        $' . number_format(($total + $gst), 2) .'
                                     </td>
                                 </tr>
                             </table>
