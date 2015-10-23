@@ -298,6 +298,7 @@ class shortcode extends HireQuote {
         $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
+        $lastOrder = $this->wpdb->get_row("SELECT * FROM $this->orders_tbl ORDER BY odr_id DESC LIMIT 1");
         ?>
         <div id="hire-quote">
             <h1>Order Details:</h1>
@@ -323,40 +324,43 @@ class shortcode extends HireQuote {
                             ?>
                             <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
                         <?php } ?>
-                        <div class="customer-detail-col">
-                            <p>
-                                <img src="<?php echo plugins_url('hire-quote/images/Rentobin-Logo.png'); ?>" alt="" width="220">
-                                <span style="padding: 15px 0 0; float: right; text-align: right;">
+                            <table cellpadding="0" cellspacing="0" style="border: none; width: 100%">
+                            <tr>
+                                <td width="40%" style="border: none;">
+                                    <img src="<?php echo plugins_url('hire-quote/images/Rentobin-Logo.png'); ?>" alt="" width="220">
+                                </td>
+                                <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
-                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164
-                                </span>
-                            </p>
-                            <p>
-                                <label><strong>Customer Name:</strong></label>
-                                <?php echo $this->cust_name; ?>
-                            </p>
-                            <p>
-                                <label><strong>Address:</strong></label>
-                                <?php echo $this->cust_address; ?>
-                            </p>
-                            <p>
-                                <label><strong>City/Suburb:</strong></label>
-                                <?php echo $this->cust_city; ?>
-                            </p>
-                            <p>
-                                <label><strong>Post Code:</strong></label>
-                                <?php echo $this->cust_postcode; ?>
-                            </p>
-                            <p>
-                                <label><strong>Phone:</strong></label>
-                                <?php echo $this->cust_phone; ?>
-                            </p>
-                            <p>
-                                <label><strong>Email:</strong></label>
-                                <?php echo $this->cust_email; ?>
-                            </p>
-
-                        </div>
+                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    <strong>Invoice No.</strong> <?php echo ($lastOrder->odr_id + 1); ?>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <strong>Invoice Date:</strong> <?php echo date('d-m-Y'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Customer Details:</strong><br>
+                                    <?php echo $this->cust_name; ?><br>
+                                    <?php echo $this->cust_address; ?><br>
+                                    <?php echo $this->cust_city; ?><br>
+                                    <?php echo $this->cust_postcode; ?><br>
+                                    <br>
+                                    <?php echo $this->cust_phone; ?><br>
+                                    <br>
+                                    <?php echo $this->cust_email; ?>
+                                </td>
+                                <td style="border: none;"></td>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Hire Date From:</strong><br>
+                                    <?php echo $this->d_date; ?><br>
+                                    <br>
+                                    <strong>Hire Date To:</strong><br>
+                                    <?php echo $this->c_date; ?>
+                                </td>
+                            </tr>
+                        </table>
 
                         <hr>
 
@@ -457,40 +461,45 @@ class shortcode extends HireQuote {
         }
 
         // Order details
-        $odr_detail = '<div class="customer-detail-col">
-                            <p>
-                                <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
-                                <span style="padding: 15px 0 0; float: right; text-align: right;">
+        $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%">
+                            <tr>
+                                <td width="40%" style="border: none;">
+                                    <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
+                                </td>
+                                <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
-                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164
-                                </span>
-                            </p>
-                            <p>
-                                <label><strong>Customer Name:</strong></label>
-                                ' . $this->cust_name . '
-                            </p>
-                            <p>
-                                <label><strong>Address:</strong></label>
-                                ' . $this->cust_address . '
-                            </p>
-                            <p>
-                                <label><strong>City/Suburb:</strong></label>
-                                ' . $this->cust_city . '
-                            </p>
-                            <p>
-                                <label><strong>Post Code:</strong></label>
-                                ' . $this->cust_postcode . '
-                            </p>
-                            <p>
-                                <label><strong>Phone:</strong></label>
-                                ' . $this->cust_phone . '
-                            </p>
-                            <p>
-                                <label><strong>Email:</strong></label>
-                                ' . $this->cust_email . '
-                            </p>
-                        </div>
-                        <hr>
+                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    <strong>Invoice No.</strong> ' . ($lastOrder->odr_id + 1) . '
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <strong>Invoice Date:</strong> ' . date('d-m-Y') . '
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none;">
+                                <br>
+                                    <strong>Customer Details:</strong><br>
+                                    ' . $this->cust_name . '<br>
+                                    ' . $this->cust_address . '<br>
+                                    ' . $this->cust_city . '<br>
+                                    ' . $this->cust_postcode . '<br>
+                                    <br>
+                                    ' . $this->cust_phone . '<br>
+                                    <br>
+                                    ' . $this->cust_email . '
+                                </td>
+                                <td style="border: none;"></td>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Hire Date From:</strong><br>
+                                    ' . $this->d_date . '<br>
+                                    <br>
+                                    <strong>Hire Date To:</strong><br>
+                                    ' . $this->c_date . '
+                                </td>
+                            </tr>
+                        </table>';
+        
+                        $odr_detail .= '<hr>
                         <div class="odr-detail-col">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0" width="100%">
@@ -533,13 +542,13 @@ class shortcode extends HireQuote {
                                         Total Payable
                                     </td>
                                     <td class="hq-price" style="text-align: right; color: #fff;">';
-                                        
-                                        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
-                                        $gst = ($total * 10) / 100;
-                                        
-                                        $odr_detail .= '$' . number_format($total, 2) . '<br>
+
+        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
+        $gst = ($total * 10) / 100;
+
+        $odr_detail .= '$' . number_format($total, 2) . '<br>
                                         $' . number_format($gst, 2) . '<br>
-                                        $' . number_format(($total + $gst), 2) .'
+                                        $' . number_format(($total + $gst), 2) . '
                                     </td>
                                 </tr>
                             </table>
@@ -577,11 +586,10 @@ class shortcode extends HireQuote {
 
 
         echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
-        
+
         if ($this->p_method == 'PayPal') {
             wp_redirect('https://www.paypal.com/au/webapps/mpp/home');
         }
-        
     }
 
 }
