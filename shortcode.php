@@ -564,7 +564,7 @@ class shortcode extends HireQuote {
 
 
 
-        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
+        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email, 'cust_suburb' => $this->cust_city));
 
         $last_id = $this->wpdb->insert_id;
 
