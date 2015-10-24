@@ -28,7 +28,7 @@ class customers_list extends HireQuote {
 
                 <?php
                 // Getting customers
-                $results = $this->wpdb->get_results("SELECT * FROM $this->customers_tbl");
+                $results = $this->wpdb->get_results("SELECT * FROM $this->customers_tbl GROUP BY (cust_email)");
 
                 if ($results) {
 
