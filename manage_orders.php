@@ -42,7 +42,7 @@ class manage_orders extends HireQuote {
                 <?php
                 // Getting orders
                 if (isset($sort)) {
-                    $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl ORDER BY odr_postcode ASC");
+                    $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl ORDER BY odr_postcode DESC");
                 } else if (isset($search)) {
                     $results = $this->wpdb->get_results("SELECT odr.*, prod.* FROM $this->orders_tbl AS odr "
                             . "INNER JOIN $this->products_tbl as prod ON odr.odr_prod_id = prod.prod_id "

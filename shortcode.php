@@ -68,7 +68,7 @@ class shortcode extends HireQuote {
     public function postcode() {
         ?>
         <div id="hire-quote">
-            <h1>Enter your address</h1>
+            <h1>Enter your Post Code</h1>
             <div class="hq-wrap">
                 <div class="postcode-wdgt">
                     <?php
@@ -79,7 +79,7 @@ class shortcode extends HireQuote {
                     <?php } ?>
                     <form method="post" action="<?php the_permalink(); ?>">
                         <input type="hidden" name="step" value="display_categories">
-                        <input type="text" name="postcode" placeholder="Enter your postcode"><button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                        <input type="text" name="postcode" placeholder="Enter your postcode"><button>NEXT</button>
                     </form>
                 </div>
             </div>
@@ -132,7 +132,7 @@ class shortcode extends HireQuote {
                                     <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"></p>
                                 <?php } ?>
                             </div>
-                            <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                            <button>NEXT</button>
                         </form>
                     </div>
                 </div>
@@ -165,7 +165,7 @@ class shortcode extends HireQuote {
                     <p style="line-height: 48px;"><label>Preferred Time:</label>
                         <input type="radio" name="prf_time" value="AM" required> AM &nbsp;&nbsp;<input type="radio" name="prf_time" value="PM" required> PM
                     </p>
-                    <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                    <button>NEXT</button>
                 </form>
             </div>
         </div>
@@ -324,7 +324,7 @@ class shortcode extends HireQuote {
                             ?>
                             <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
                         <?php } ?>
-                            <table cellpadding="0" cellspacing="0" style="border: none; width: 100%">
+                        <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999;">
                             <tr>
                                 <td width="40%" style="border: none;">
                                     <img src="<?php echo plugins_url('hire-quote/images/Rentobin-Logo.png'); ?>" alt="" width="220">
@@ -332,6 +332,7 @@ class shortcode extends HireQuote {
                                 <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
                                     Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    ABN: 47 164 867 841<br>
                                     <strong>Invoice No.</strong> <?php echo ($lastOrder->odr_id + 1); ?>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <strong>Invoice Date:</strong> <?php echo date('d-m-Y'); ?>
@@ -364,7 +365,7 @@ class shortcode extends HireQuote {
 
                         <hr>
 
-                        <div class="odr-detail-col">
+                        <div class="odr-detail-col" style="color: #999;">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0">
                                 <tr>
@@ -418,19 +419,19 @@ class shortcode extends HireQuote {
                             </table>
                         </div>
 
-                        <h6>Special Instructions:</h6> 
-                        <p>NOTE: You have selected ‘<?php echo $cat->cat_name; ?>’ as your waste type. Please note that only following <?php echo $cat->cat_name; ?> is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
-                        <p><strong>Allowed:</strong> <?php echo $cat->cat_allowed; ?></p>
-                        <p><strong>Not Allowed:</strong> <?php echo $cat->cat_not_allowed; ?></p>
-                        <p>Please see our ‘Terms and Conditions’ of hire.</p>
+                        <h6 style="color: #999;">Special Instructions:</h6> 
+                        <p style="color: #999;">NOTE: You have selected ‘<?php echo $cat->cat_name; ?>’ as your waste type. Please note that only following <?php echo $cat->cat_name; ?> is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
+                        <p style="color: #999;"><strong>Allowed:</strong> <?php echo $cat->cat_allowed; ?></p>
+                        <p style="color: #999;"><strong>Not Allowed:</strong> <?php echo $cat->cat_not_allowed; ?></p>
+                        <p style="color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
 
-                        <h6>Payment Method:</h6> 
-                        <p>
+                        <h6 style="color: #999;">Payment Method:</h6> 
+                        <p style="color: #999;">
                             <label><input type="radio" name="p_method" value="PayPal" checked> PayPal</label><br>
                             <label><input type="radio" name="p_method" value="Bank Transfer (EFT)"> Bank Transfer (EFT)</label>
                         </p>
 
-                        <p>
+                        <p style="color: #999;">
                             <button>Pay Now</button>
                         </p>
 
@@ -461,7 +462,7 @@ class shortcode extends HireQuote {
         }
 
         // Order details
-        $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%">
+        $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999">
                             <tr>
                                 <td width="40%" style="border: none;">
                                     <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
@@ -469,6 +470,7 @@ class shortcode extends HireQuote {
                                 <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
                                     Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    ABN: 47 164 867 841<br>
                                     <strong>Invoice No.</strong> ' . ($lastOrder->odr_id + 1) . '
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <strong>Invoice Date:</strong> ' . date('d-m-Y') . '
@@ -498,9 +500,9 @@ class shortcode extends HireQuote {
                                 </td>
                             </tr>
                         </table>';
-        
-                        $odr_detail .= '<hr>
-                        <div class="odr-detail-col">
+
+        $odr_detail .= '<hr>
+                        <div class="odr-detail-col" style="color: #999;">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
@@ -554,13 +556,13 @@ class shortcode extends HireQuote {
                             </table>
                         </div>
 
-                        <h6 style="font-size: 20px;">Special Instructions:</h6> 
-                        <p>NOTE: You have selected &acute;' . $cat->cat_name . '&acute; as your waste type. Please note that only following &acute;' . $cat->cat_name . '&acute; is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
-                        <p><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
-                        <p><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
-                        <p>Please see our ‘Terms and Conditions’ of hire.</p>
+                        <h6 style="font-size: 20px; color: #999;">Special Instructions:</h6> 
+                        <p style="color: #999;">NOTE: You have selected &acute;' . $cat->cat_name . '&acute; as your waste type. Please note that only following &acute;' . $cat->cat_name . '&acute; is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
+                        <p style="color: #999;"><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
+                        <p style="color: #999;"><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
+                        <p style="color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
 
-                        <h6 style="font-size: 20px;">Payment Method: ' . $this->p_method . '</h6>';
+                        <h6 style="font-size: 20px; color: #999;">Payment Method: ' . $this->p_method . '</h6>';
 
 
 
@@ -585,7 +587,12 @@ class shortcode extends HireQuote {
         wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
 
 
-        echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
+        echo '<div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>'
+        . '<p><strong>Direct Debit Account Details</srtong><br>
+            ACC Name: Rentobin Pty Ltd<br>
+            BANK: Bankwest<br>
+            BSB: 302162<br>
+            ACC NO: 0490279</p>';
 
         if ($this->p_method == 'PayPal') {
             wp_redirect('https://www.paypal.com/au/webapps/mpp/home');
