@@ -70,7 +70,7 @@ class shortcode extends HireQuote {
     public function postcode() {
         ?>
         <div id="hire-quote">
-            <h1>Enter your address</h1>
+            <h1>Enter your Post Code</h1>
             <div class="hq-wrap">
                 <div class="postcode-wdgt">
                     <?php
@@ -81,7 +81,7 @@ class shortcode extends HireQuote {
                     <?php } ?>
                     <form method="post" action="<?php the_permalink(); ?>">
                         <input type="hidden" name="step" value="display_categories">
-                        <input type="text" name="postcode" placeholder="Enter your postcode"><button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                        <input type="text" name="postcode" placeholder="Enter your postcode"><button>NEXT</button>
                     </form>
                 </div>
             </div>
@@ -134,7 +134,7 @@ class shortcode extends HireQuote {
                                     <p><label for="opt_<?php echo $option->opt_id; ?>"><?php echo $option->opt_name; ?>:</label> <input type="number" name="opt_<?php echo $option->opt_id; ?>" id="opt_<?php echo $option->opt_id; ?>" value="0"></p>
                                 <?php } ?>
                             </div>
-                            <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                            <button>NEXT</button>
                         </form>
                     </div>
                 </div>
@@ -167,7 +167,7 @@ class shortcode extends HireQuote {
                     <p style="line-height: 48px;"><label>Preferred Time:</label>
                         <input type="radio" name="prf_time" value="AM" required> AM &nbsp;&nbsp;<input type="radio" name="prf_time" value="PM" required> PM
                     </p>
-                    <button>NEXT <i class="dashicons-before dashicons-controls-play"></i></button>
+                    <button>NEXT</button>
                 </form>
             </div>
         </div>
@@ -301,6 +301,7 @@ class shortcode extends HireQuote {
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
 		$orderMaxId = $this->wpdb->get_results("SELECT MAX(odr_id) FROM $this->orders_tbl",ARRAY_A);
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
+        $lastOrder = $this->wpdb->get_row("SELECT * FROM $this->orders_tbl ORDER BY odr_id DESC LIMIT 1");
         ?>
         <div id="hire-quote">
             <h1>Order Details: </h1>
@@ -327,58 +328,48 @@ class shortcode extends HireQuote {
                             ?>
                             <input type="hidden" name="opt_<?php echo $option->opt_id; ?>" value="<?php echo $opt_val; ?>">
                         <?php } ?>
-                        <div class="customer-detail-col">
-                            <p>
-                                <img src="<?php echo plugins_url('hire-quote/images/Rentobin-Logo.png'); ?>" alt="" width="220">
-                                <span style="padding: 15px 0 0; float: right; text-align: right;">
+                        <table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999;">
+                            <tr>
+                                <td width="40%" style="border: none;">
+                                    <img src="<?php echo plugins_url('hire-quote/images/Rentobin-Logo.png'); ?>" alt="" width="220">
+                                </td>
+                                <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
-                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164
-                                    </br>
-                                 <!--add invoice no-->
-                            
-                            <label><strong>Invoice No:</strong></label>
-                                <?php echo ($orderMaxId[0]['MAX(odr_id)'] + 1); ?>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                 <label><strong>Invoice Date:</strong></label>
-                                 <?php echo date('d-m-Y');?>
-                                </span>
-                                
-                            </p>
-                           
-                            
-                            
-                            
-                            
-                            <p>
-                                <label><strong>Customer Name:</strong></label>
-                                <?php echo $this->cust_name; ?>
-                            </p>
-                            <p>
-                                <label><strong>Address:</strong></label>
-                                <?php echo $this->cust_address; ?>
-                            </p>
-                            <p>
-                                <label><strong>City/Suburb:</strong></label>
-                                <?php echo $this->cust_city; ?>
-                            </p>
-                            <p>
-                                <label><strong>Post Code:</strong></label>
-                                <?php echo $this->cust_postcode; ?>
-                            </p>
-                            <p>
-                                <label><strong>Phone:</strong></label>
-                                <?php echo $this->cust_phone; ?>
-                            </p>
-                            <p>
-                                <label><strong>Email:</strong></label>
-                                <?php echo $this->cust_email; ?>
-                            </p>
-
-                        </div>
+                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    ABN: 47 164 867 841<br>
+                                    <strong>Invoice No.</strong> <?php echo ($lastOrder->odr_id + 1); ?>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <strong>Invoice Date:</strong> <?php echo date('d-m-Y'); ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Customer Details:</strong><br>
+                                    <?php echo $this->cust_name; ?><br>
+                                    <?php echo $this->cust_address; ?><br>
+                                    <?php echo $this->cust_city; ?><br>
+                                    <?php echo $this->cust_postcode; ?><br>
+                                    <br>
+                                    <?php echo $this->cust_phone; ?><br>
+                                    <br>
+                                    <?php echo $this->cust_email; ?>
+                                </td>
+                                <td style="border: none;"></td>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Hire Date From:</strong><br>
+                                    <?php echo $this->d_date; ?><br>
+                                    <br>
+                                    <strong>Hire Date To:</strong><br>
+                                    <?php echo $this->c_date; ?>
+                                </td>
+                            </tr>
+                        </table>
 
                         <hr>
 
-                        <div class="odr-detail-col">
+                        <div class="odr-detail-col" style="color: #999;">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0">
                                 <tr>
@@ -432,19 +423,19 @@ class shortcode extends HireQuote {
                             </table>
                         </div>
 
-                        <h6>Special Instructions:</h6> 
-                        <p>NOTE: You have selected ‘<?php echo $cat->cat_name; ?>’ as your waste type. Please note that only following <?php echo $cat->cat_name; ?> is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
-                        <p><strong>Allowed:</strong> <?php echo $cat->cat_allowed; ?></p>
-                        <p><strong>Not Allowed:</strong> <?php echo $cat->cat_not_allowed; ?></p>
-                        <p>Please see our ‘Terms and Conditions’ of hire.</p>
+                        <h6 style="color: #999;">Special Instructions:</h6> 
+                        <p style="color: #999;">NOTE: You have selected ‘<?php echo $cat->cat_name; ?>’ as your waste type. Please note that only following <?php echo $cat->cat_name; ?> is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
+                        <p style="color: #999;"><strong>Allowed:</strong> <?php echo $cat->cat_allowed; ?></p>
+                        <p style="color: #999;"><strong>Not Allowed:</strong> <?php echo $cat->cat_not_allowed; ?></p>
+                        <p style="color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
 
-                        <h6>Payment Method:</h6> 
-                        <p>
+                        <h6 style="color: #999;">Payment Method:</h6> 
+                        <p style="color: #999;">
                             <label><input type="radio" name="p_method" value="PayPal" checked> PayPal</label><br>
                             <label><input type="radio" name="p_method" value="Bank Transfer (EFT)"> Bank Transfer (EFT)</label>
                         </p>
 
-                        <p>
+                        <p style="color: #999;">
                             <button>Pay Now</button>
                         </p>
 
@@ -475,41 +466,47 @@ class shortcode extends HireQuote {
         }
 
         // Order details
-        $odr_detail = '<div class="customer-detail-col">
-                            <p>
-                                <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
-                                <span style="padding: 15px 0 0; float: right; text-align: right;">
+        $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999">
+                            <tr>
+                                <td width="40%" style="border: none;">
+                                    <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
+                                </td>
+                                <td colspan="2" style="border: none; text-align: right; vertical-align: top;">
                                     Ph: 9721 3576<br>
-                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164
-                                </span>
-                            </p>
-                            <p>
-                                <label><strong>Customer Name:</strong></label>
-                                ' . $this->cust_name . '
-                            </p>
-                            <p>
-                                <label><strong>Address:</strong></label>
-                                ' . $this->cust_address . '
-                            </p>
-                            <p>
-                                <label><strong>City/Suburb:</strong></label>
-                                ' . $this->cust_city . '
-                            </p>
-                            <p>
-                                <label><strong>Post Code:</strong></label>
-                                ' . $this->cust_postcode . '
-                            </p>
-                            <p>
-                                <label><strong>Phone:</strong></label>
-                                ' . $this->cust_phone . '
-                            </p>
-                            <p>
-                                <label><strong>Email:</strong></label>
-                                ' . $this->cust_email . '
-                            </p>
-                        </div>
-                        <hr>
-                        <div class="odr-detail-col">
+                                    Unit 1 79-91 Betts Rd, Smithfield NSW 2164<br>
+                                    ABN: 47 164 867 841<br>
+                                    <strong>Invoice No.</strong> ' . ($lastOrder->odr_id + 1) . '
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <strong>Invoice Date:</strong> ' . date('d-m-Y') . '
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: none;">
+                                <br>
+                                    <strong>Customer Details:</strong><br>
+                                    ' . $this->cust_name . '<br>
+                                    ' . $this->cust_address . '<br>
+                                    ' . $this->cust_city . '<br>
+                                    ' . $this->cust_postcode . '<br>
+                                    <br>
+                                    ' . $this->cust_phone . '<br>
+                                    <br>
+                                    ' . $this->cust_email . '
+                                </td>
+                                <td style="border: none;"></td>
+                                <td style="border: none;">
+                                    <br>
+                                    <strong>Hire Date From:</strong><br>
+                                    ' . $this->d_date . '<br>
+                                    <br>
+                                    <strong>Hire Date To:</strong><br>
+                                    ' . $this->c_date . '
+                                </td>
+                            </tr>
+                        </table>';
+
+        $odr_detail .= '<hr>
+                        <div class="odr-detail-col" style="color: #999;">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
@@ -551,29 +548,29 @@ class shortcode extends HireQuote {
                                         Total Payable
                                     </td>
                                     <td class="hq-price" style="text-align: right; color: #fff;">';
-                                        
-                                        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
-                                        $gst = ($total * 10) / 100;
-                                        
-                                        $odr_detail .= '$' . number_format($total, 2) . '<br>
+
+        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
+        $gst = ($total * 10) / 100;
+
+        $odr_detail .= '$' . number_format($total, 2) . '<br>
                                         $' . number_format($gst, 2) . '<br>
-                                        $' . number_format(($total + $gst), 2) .'
+                                        $' . number_format(($total + $gst), 2) . '
                                     </td>
                                 </tr>
                             </table>
                         </div>
 
-                        <h6 style="font-size: 20px;">Special Instructions:</h6> 
-                        <p>NOTE: You have selected &acute;' . $cat->cat_name . '&acute; as your waste type. Please note that only following &acute;' . $cat->cat_name . '&acute; is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
-                        <p><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
-                        <p><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
-                        <p>Please see our ‘Terms and Conditions’ of hire.</p>
+                        <h6 style="font-size: 20px; color: #999;">Special Instructions:</h6> 
+                        <p style="color: #999;">NOTE: You have selected &acute;' . $cat->cat_name . '&acute; as your waste type. Please note that only following &acute;' . $cat->cat_name . '&acute; is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
+                        <p style="color: #999;"><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
+                        <p style="color: #999;"><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
+                        <p style="color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
 
-                        <h6 style="font-size: 20px;">Payment Method: ' . $this->p_method . '</h6>';
+                        <h6 style="font-size: 20px; color: #999;">Payment Method: ' . $this->p_method . '</h6>';
 
 
 
-        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email));
+        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email, 'cust_suburb' => $this->cust_city));
 
         $last_id = $this->wpdb->insert_id;
 
@@ -594,12 +591,16 @@ class shortcode extends HireQuote {
         wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
 
 
-        echo '<div class="order-ok">Thanks For Requesting A Quote!</div>';
-        
+        echo '<div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>'
+        . '<p><strong>Direct Debit Account Details</srtong><br>
+            ACC Name: Rentobin Pty Ltd<br>
+            BANK: Bankwest<br>
+            BSB: 302162<br>
+            ACC NO: 0490279</p>';
+
         if ($this->p_method == 'PayPal') {
             wp_redirect('https://www.paypal.com/au/webapps/mpp/home');
         }
-        
     }
 
 }
