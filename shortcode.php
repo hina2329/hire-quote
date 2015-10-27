@@ -1,4 +1,4 @@
-<?php
+ab agay date <?php
 
 // Shortcode Class
 class shortcode extends HireQuote {
@@ -20,6 +20,7 @@ class shortcode extends HireQuote {
     public $cust_email;
     public $p_method;
     public $cust_city;
+	public $odr_id;
 
     public function __construct() {
         parent::__construct();
@@ -40,6 +41,7 @@ class shortcode extends HireQuote {
         $this->cust_email = filter_input(INPUT_POST, 'cust_email');
         $this->p_method = filter_input(INPUT_POST, 'p_method');
         $this->cust_city = filter_input(INPUT_POST, 'cust_city');
+		 $this->odr_id = filter_input(INPUT_POST, 'odr_id');
 
         // Number of days
         $date1 = date_create($this->d_date);
@@ -297,10 +299,11 @@ class shortcode extends HireQuote {
     public function final_form() {
         $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
+		$orderMaxId = $this->wpdb->get_results("SELECT MAX(odr_id) FROM $this->orders_tbl",ARRAY_A);
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
         ?>
         <div id="hire-quote">
-            <h1>Order Details:</h1>
+            <h1>Order Details: </h1>
             <div class="hq-wrap">
                 <div class="hq-final">
                     <form method="post" action="<?php the_permalink(); ?>">
@@ -317,6 +320,7 @@ class shortcode extends HireQuote {
                         <input type="hidden" name="cust_phone" value="<?php echo $this->cust_phone; ?>">
                         <input type="hidden" name="cust_postcode" value="<?php echo $this->cust_postcode; ?>">
                         <input type="hidden" name="cust_city" value="<?php echo $this->cust_city; ?>">
+                         <input type="hidden" name="odr_id" value="<?php echo $this->odr_id; ?>">
                         <?php
                         foreach ($options as $option) {
                             $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
@@ -329,8 +333,22 @@ class shortcode extends HireQuote {
                                 <span style="padding: 15px 0 0; float: right; text-align: right;">
                                     Ph: 9721 3576<br>
                                     Unit 1 79-91 Betts Rd, Smithfield NSW 2164
+                                    </br>
+                                 <!--add invoice no-->
+                            
+                            <label><strong>Invoice No:</strong></label>
+                                <?php echo ($orderMaxId[0]['MAX(odr_id)'] + 1); ?>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                 <label><strong>Invoice Date:</strong></label>
+                                 <?php echo date('d-m-Y');?>
                                 </span>
+                                
                             </p>
+                           
+                            
+                            
+                            
+                            
                             <p>
                                 <label><strong>Customer Name:</strong></label>
                                 <?php echo $this->cust_name; ?>

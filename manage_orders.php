@@ -2,9 +2,15 @@
 
 // Orders Class
 class manage_orders extends HireQuote {
+	
+	public $page_num = 0;
+	public $per_page = 40;
 
     public function __construct() {
         parent::__construct();
+		
+		// Getting which page user is on
+		$this->page_num = filter_input(INPUT_GET, 'page_num');
     }
 
     // Iniating main method to display orders
@@ -28,10 +34,11 @@ class manage_orders extends HireQuote {
             <thead>
                 <tr>
                     <th width="10%">Order No.</th>
-                    <th width="20%">Product Name</th>
-                    <th width="20%">Category Name</th>
-                    <th width="20%">Customer Name</th>
+                    <th width="10%"><a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=init&sort=prodname'); ?>"><span>Product Name</span> <span class="dashicons-before dashicons-sort"></span></a></th>
+                    <th width="10%"><a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=init&sort=catname'); ?>"><span>Category Name</span> <span class="dashicons-before dashicons-sort"></span></a></th>
+                    <th width="10%">Customer Name</th>
                     <th width="10%"><a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=init&sort=postcode'); ?>"><span>Post Code</span> <span class="dashicons-before dashicons-sort"></span></a></th>
+                    
                     <th width="10%">Order Status</th>
                     <th width="10%" class="actions">Actions</th>
                 </tr>
@@ -41,9 +48,14 @@ class manage_orders extends HireQuote {
 
                 <?php
                 // Getting orders
-                if (isset($sort)) {
-                    $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl ORDER BY odr_postcode ASC");
-                } else if (isset($search)) {
+                if (isset($sort) && $sort == 'postcode') {
+                    $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl ORDER BY odr_postcode ASC ");
+				} else if (isset($sort) && $sort == 'prodname') {
+					 $results = $this->wpdb->get_results("SELECT odr.*, prod.* FROM $this->orders_tbl AS odr "
+                            . "INNER JOIN $this->products_tbl as prod ON odr.odr_prod_id = prod.prod_id ORDER BY prod_name ASC ");
+				} else if (isset($sort) && $sort == 'catname') {
+					 $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl ORDER BY odr_cat_id ASC ");
+				}else if (isset($search)) {
                     $results = $this->wpdb->get_results("SELECT odr.*, prod.* FROM $this->orders_tbl AS odr "
                             . "INNER JOIN $this->products_tbl as prod ON odr.odr_prod_id = prod.prod_id "
                             . "INNER JOIN $this->categories_tbl as cat ON odr.odr_cat_id = cat.cat_id "
@@ -53,17 +65,27 @@ class manage_orders extends HireQuote {
                             . "OR cust.cust_name LIKE '%$search%' "
                             . "OR odr.odr_status LIKE '%$search%' "
                             . "OR odr.odr_postcode LIKE '%$search%' "
-                            . "OR odr.odr_id LIKE '%$search%'");
+                            . "OR odr.odr_id LIKE '%$search%' ");
                 } else {
-                    $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl");
-                }
+					$offset = $this->page_num * $this->per_page;
+                     $results = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl LIMIT $this->per_page OFFSET $offset");
+	  
+				}
+				
+				
+				// Pagintaion count
+				$rows_count = $this->wpdb->get_results("SELECT * FROM $this->orders_tbl");
+				
+				$rows = count($rows_count);
+				
+				 
 
                 if ($results) {
 
                     foreach ($results as $row) {
                         $customer = $this->wpdb->get_row("SELECT * FROM $this->customers_tbl WHERE cust_id = $row->odr_cust_id");
-                        $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $row->odr_prod_id");
-                        $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $row->odr_cat_id");
+                        $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $row->odr_prod_id ");
+                        $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $row->odr_cat_id ");
                         ?>
                         <tr>
                             <td class="column-title">
@@ -74,6 +96,9 @@ class manage_orders extends HireQuote {
                             <td><?php echo $customer->cust_name; ?></td>
                             <td><?php echo $row->odr_postcode; ?></td>
                             <td><?php echo $row->odr_status; ?></td>
+                            
+                            
+                              
                             <td class="actions">
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=view&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-visibility" title="View"></a> 
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Processed&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-thumbs-up" title="Process" onclick="return confirm('Are you sure you want to process this order?');"></a>
@@ -82,9 +107,11 @@ class manage_orders extends HireQuote {
                                 <a href="<?php echo admin_url('admin.php?page=' . $this->page . '&action=status&set=Canceled&id=' . $row->odr_id); ?>" class="dashicons-before dashicons-no" title="Cancel" onclick="return confirm('Are you sure you want to cancel this order?');"></a>
                             </td>
                         </tr>
+                        
+                        
                         <?php
                     }
-                } else {
+                }else {
                     ?>
                     <tr>
                         <td colspan="7" style="text-align: center;"><strong>No Records Found</strong></td>
@@ -92,11 +119,23 @@ class manage_orders extends HireQuote {
                     <?php
                 }
                 ?>
+                
+
 
             </tbody>
 
         </table>
-
+         <?php 
+		
+		$orders_per_page = $rows / $this->per_page;
+		
+		for ($i = 1; $i <= $orders_per_page; $i++) {
+			echo '<a href="' . admin_url('admin.php?page=' . $this->page . '&action=init&page_num=' . ($i - 1)) . '">' .  $i . '</a>';
+		}
+				
+		?>
+        
+       
         <?php
     }
 
