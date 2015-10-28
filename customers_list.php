@@ -28,7 +28,16 @@ class customers_list extends HireQuote {
 
                 <?php
                 // Getting customers
-                $results = $this->wpdb->get_results("SELECT * FROM $this->customers_tbl GROUP BY (cust_email)");
+                $offset = 0;
+                    if (isset($_GET['page_num'])) {
+                        $offset = $this->page_num * $this->per_page;
+                    }
+                $results = $this->wpdb->get_results("SELECT * FROM $this->customers_tbl GROUP BY (cust_email) LIMIT $offset, $this->per_page");
+                
+                // Pagintaion count
+                $rows_count = $this->wpdb->get_results("SELECT * FROM $this->customers_tbl GROUP BY (cust_email) ");
+
+                $rows = count($rows_count);
 
                 if ($results) {
 
@@ -58,6 +67,23 @@ class customers_list extends HireQuote {
             </tbody>
 
         </table>
+        
+        <div class="hq-pager">
+            <?php
+            $last_page = ceil($rows / $this->per_page);
+
+            if ($rows > $this->per_page) {
+
+                for ($i = 1; $i <= $last_page; $i++) {
+                    if ($_GET['page_num'] == $i) {
+                        echo '<a class="active-page" href="' . admin_url('admin.php?page=' . $this->page . '&action=init&page_num=' . $i) . '">' . $i . '</a>';
+                    } else {
+                        echo '<a href="' . admin_url('admin.php?page=' . $this->page . '&action=init&page_num=' . $i) . '">' . $i . '</a>';
+                    }
+                }
+            }
+            ?>
+        </div>
 
         <?php
     }

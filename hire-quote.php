@@ -21,6 +21,7 @@ class HireQuote {
     protected $orders_tbl;
     protected $customers_tbl;
     public $setting;
+    public $per_page = 3;
 
     public function __construct() {
 
@@ -42,6 +43,9 @@ class HireQuote {
 
         // User HTTP request for class
         $this->page = filter_input(INPUT_GET, 'page');
+        
+        // Getting which page user is on
+        $this->page_num = filter_input(INPUT_GET, 'page_num') - 1;
 
         // Adding the main page
         add_action('admin_menu', array($this, 'hq_menu'));

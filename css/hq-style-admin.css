@@ -36,6 +36,23 @@
 .hq-final {
     overflow: hidden;
 }
+.hq-pager {
+    text-align: center;
+    padding: 20px 0;
+}
+.hq-pager a {
+    display: inline-block;
+    line-height: 30px;
+    width: 30px;
+    background: #fff;
+    border: #CCC 1px solid;
+    text-decoration: none;
+    margin: 0 5px;
+}
+/*.hq-pager a.active-page {
+    background: #0073AA;
+    color: #fff;
+}*/
 @media print {
     body, .actions a {
         visibility: hidden;

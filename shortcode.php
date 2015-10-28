@@ -1,4 +1,4 @@
-ab agay date <?php
+<?php
 
 // Shortcode Class
 class shortcode extends HireQuote {
@@ -20,7 +20,7 @@ class shortcode extends HireQuote {
     public $cust_email;
     public $p_method;
     public $cust_city;
-	public $odr_id;
+    public $odr_id;
 
     public function __construct() {
         parent::__construct();
@@ -41,7 +41,7 @@ class shortcode extends HireQuote {
         $this->cust_email = filter_input(INPUT_POST, 'cust_email');
         $this->p_method = filter_input(INPUT_POST, 'p_method');
         $this->cust_city = filter_input(INPUT_POST, 'cust_city');
-		 $this->odr_id = filter_input(INPUT_POST, 'odr_id');
+	$this->odr_id = filter_input(INPUT_POST, 'odr_id');
 
         // Number of days
         $date1 = date_create($this->d_date);
@@ -299,7 +299,6 @@ class shortcode extends HireQuote {
     public function final_form() {
         $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
-		$orderMaxId = $this->wpdb->get_results("SELECT MAX(odr_id) FROM $this->orders_tbl",ARRAY_A);
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
         $lastOrder = $this->wpdb->get_row("SELECT * FROM $this->orders_tbl ORDER BY odr_id DESC LIMIT 1");
         ?>
@@ -438,7 +437,7 @@ class shortcode extends HireQuote {
                         <p style="color: #999;">
                             <button>Pay Now</button>
                         </p>
-
+                        
                     </form>
 
                 </div>
