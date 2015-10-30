@@ -41,7 +41,7 @@ class shortcode extends HireQuote {
         $this->cust_email = filter_input(INPUT_POST, 'cust_email');
         $this->p_method = filter_input(INPUT_POST, 'p_method');
         $this->cust_city = filter_input(INPUT_POST, 'cust_city');
-	$this->odr_id = filter_input(INPUT_POST, 'odr_id');
+        $this->odr_id = filter_input(INPUT_POST, 'odr_id');
 
         // Number of days
         $date1 = date_create($this->d_date);
@@ -320,7 +320,7 @@ class shortcode extends HireQuote {
                         <input type="hidden" name="cust_phone" value="<?php echo $this->cust_phone; ?>">
                         <input type="hidden" name="cust_postcode" value="<?php echo $this->cust_postcode; ?>">
                         <input type="hidden" name="cust_city" value="<?php echo $this->cust_city; ?>">
-                         <input type="hidden" name="odr_id" value="<?php echo $this->odr_id; ?>">
+                        <input type="hidden" name="odr_id" value="<?php echo $this->odr_id; ?>">
                         <?php
                         foreach ($options as $option) {
                             $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
@@ -437,7 +437,7 @@ class shortcode extends HireQuote {
                         <p style="color: #999;">
                             <button>Pay Now</button>
                         </p>
-                        
+
                     </form>
 
                 </div>
@@ -590,16 +590,36 @@ class shortcode extends HireQuote {
         wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
 
 
-        echo '<div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>'
-        . '<p><strong>Direct Debit Account Details</srtong><br>
-            ACC Name: Rentobin Pty Ltd<br>
-            BANK: Bankwest<br>
-            BSB: 302162<br>
-            ACC NO: 0490279</p>';
+        echo '<div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>';
 
         if ($this->p_method == 'PayPal') {
-            wp_redirect('https://www.paypal.com/au/webapps/mpp/home');
-        }
-    }
+            ?>
+            <form action='https://www.paypal.com/cgi-bin/webscr' method='post' name='frmPayPal1'>
+                <p style="text-align: center;">
+                <input type='hidden' name='business' value='hadimaatouk83@gmail.com'>
+                <input type='hidden' name='cmd' value='_xclick'>
+                <input type='hidden' name='item_name' value='<?php echo $product->prod_name; ?>'>
+                <input type='hidden' name='amount' value='<?php echo number_format(($total + $gst), 2) ?>'>
+                <input type='hidden' name='no_shipping' value='1'>
+                <input type='hidden' name='currency_code' value='USD'>
+                <input type='hidden' name='handling' value='0'>
+                <input type='hidden' name='cancel_return' value='http://rentobin.com'>
+                <input type='hidden' name='return' value='http://rentobin.com'>
+                <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                </p>
+            </form>
 
-}
+        <?php } else {
+            ?>
+            <p><strong>Direct Debit Account Details</srtong><br>
+                ACC Name: Rentobin Pty Ltd<br>
+                BANK: Bankwest<br>
+                BSB: 302162<br>
+                ACC NO: 0490279</p>
+                <?php
+            }
+        }
+
+    }
+    

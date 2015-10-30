@@ -115,13 +115,13 @@
     font-size: 14px;
 }
 .order-ok {
-    width: 290px;
+    width: 400px;
     font-size: 20px;
     padding: 20px 30px;
     background: #D1E68F;
     color: #82AC00;
     text-align: center;
-    margin: 0 auto;
+    margin: 0 auto 30px;
     border-radius: 10px;
 }
 #hq-rate-list, .hq-addons {
