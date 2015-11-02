@@ -632,7 +632,7 @@ class shortcode extends HireQuote {
             // Admin header
             $admin_headers = "MIME-Version: 1.0" . "\r\n";
             $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-            $admin_headers .= 'From: <' . $this->setting->hq_email . '>' . "\r\n";
+            $admin_headers .= 'From: Rentobin<' . $this->setting->hq_email . '>' . "\r\n";
 
             // Mail
             wp_mail($this->setting->hq_email, 'New order has been placed!', $odr_detail, $user_headers);
