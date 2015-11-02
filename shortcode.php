@@ -21,6 +21,7 @@ class shortcode extends HireQuote {
     public $p_method;
     public $cust_city;
     public $odr_id;
+	
 
     public function __construct() {
         parent::__construct();
@@ -420,6 +421,12 @@ class shortcode extends HireQuote {
                                     </td>
                                 </tr>
                             </table>
+                           
+                            <input type="hidden" name="step" value="final_form">
+                            <input type="text"  name="coupon"  placeholder="Coupon Code" id="hq-fieldsize"/>
+                            <button>Update Invoice</button>
+                          <?php echo $this->setting->hq_paypal;?>
+                            <?php echo $_POST['coupon'];?>
                         </div>
 
                         <h6 style="color: #999;">Special Instructions:</h6> 
@@ -441,7 +448,8 @@ class shortcode extends HireQuote {
                     </form>
 
                 </div>
-            </div>
+      
+     
         </div>
         <?php
     }
@@ -596,15 +604,15 @@ class shortcode extends HireQuote {
             ?>
             <form action='https://www.paypal.com/cgi-bin/webscr' method='post' name='frmPayPal1'>
                 <p style="text-align: center;">
-                <input type='hidden' name='business' value='hadimaatouk83@gmail.com'>
+                <input type='hidden' name='business' value='<?php echo $this->setting->hq_paypal;?>'>
                 <input type='hidden' name='cmd' value='_xclick'>
                 <input type='hidden' name='item_name' value='<?php echo $product->prod_name; ?>'>
                 <input type='hidden' name='amount' value='<?php echo number_format(($total + $gst), 2) ?>'>
                 <input type='hidden' name='no_shipping' value='1'>
                 <input type='hidden' name='currency_code' value='USD'>
                 <input type='hidden' name='handling' value='0'>
-                <input type='hidden' name='cancel_return' value='http://rentobin.com'>
-                <input type='hidden' name='return' value='http://rentobin.com'>
+                <input type='hidden' name='cancel_return' value='http://rentobin.com.au'>
+                <input type='hidden' name='return' value='http://rentobin.com.au'>
                 <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
                 <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
                 </p>

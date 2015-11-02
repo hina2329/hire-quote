@@ -26,6 +26,10 @@ class settings extends HireQuote {
                     <label for="hq_email">Notify Email</label><br>
                     <input name="hq_settings[hq_email]" id="hq_email" type="text" value="<?php echo $this->setting->hq_email; ?>" >
                 </div>
+                <div class="form-field">
+                <label for="hq_paypal">Paypal Email ID</label><br>
+                <input name="hq_settings[hq_paypal]" id="hq_paypal" type="text" value="<?php echo $this->setting->hq_paypal;?>" />
+                </div>
                 <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Save Settings"></p>
             </form>
         </div>
