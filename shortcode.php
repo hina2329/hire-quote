@@ -58,7 +58,9 @@ class shortcode extends HireQuote {
             $this->display_products();
         } else if (isset($this->step) && $this->step == 'customer_form') {
             $this->customer_form();
-        } else if (isset($this->step) && $this->step == 'final_form' || isset($_POST['set_coupon'] )) {
+        } else if (isset($this->step) && $this->step == 'final_form') {
+            $this->final_form();
+        } else if (isset($_POST['coupon']) && !empty($_POST['coupon'])) {
             $this->final_form();
         } else if (isset($this->step) && $this->step == 'submit_quote') {
             $this->submit_quote();
@@ -423,8 +425,9 @@ class shortcode extends HireQuote {
                             </table>
                           
                            
-                            <input type="hidden" name="set_coupon" value="final_coupon">
-                            <input type="text"  name="coupon"  placeholder="Coupon Code" id="hq-fieldsize"/>
+
+                            <input type="text" name="coupon" placeholder="Coupon Code" id="hq-fieldsize"/>
+
                             <button>Update Invoice</button>
                           <?php echo $this->setting->hq_paypal;?>
                             <?php echo $_POST['coupon'];?>
@@ -445,7 +448,6 @@ class shortcode extends HireQuote {
                         <p style="color: #999;">
                             <button>Pay Now</button>
                         </p>
-
                     </form>
 
                 </div>
