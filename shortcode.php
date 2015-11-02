@@ -21,7 +21,6 @@ class shortcode extends HireQuote {
     public $p_method;
     public $cust_city;
     public $odr_id;
-	
 
     public function __construct() {
         parent::__construct();
@@ -304,6 +303,12 @@ class shortcode extends HireQuote {
         $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
         $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
         $lastOrder = $this->wpdb->get_row("SELECT * FROM $this->orders_tbl ORDER BY odr_id DESC LIMIT 1");
+        $code = $_POST['coupon'];
+        $invalid_code = '';
+        $coupon = $this->wpdb->get_row("SELECT * FROM $this->coupons_tbl WHERE copn_code = '$code'");
+        if (isset($code) && !empty($code) && !$coupon) {
+            $invalid_code = '<span style="color: red;">INVALID CODE!</span>';
+        }
         ?>
         <div id="hire-quote">
             <h1>Order Details: </h1>
@@ -410,6 +415,11 @@ class shortcode extends HireQuote {
                                     <td>
                                         TOTAL<br>
                                         GST: (10%)<br>
+                                        <?php
+                                        if ($coupon) {
+                                            echo 'Discount: (' . $coupon->copn_discount . '%)<br>';
+                                        }
+                                        ?>
                                         Total Payable
                                     </td>
                                     <td class="hq-price">
@@ -419,18 +429,29 @@ class shortcode extends HireQuote {
                                         ?>
                                         $<?php echo number_format($total, 2); ?><br>
                                         $<?php echo number_format($gst, 2); ?><br>
-                                        $<?php echo number_format(($total + $gst), 2); ?>
+                                        <?php
+                                        if ($coupon) {
+                                            $discounted = (($total + $gst) * $coupon->copn_discount) / 100;
+                                            echo '-$' . number_format($discounted, 2) . '<br>';
+                                            echo number_format(($total + $gst) - $discounted, 2);
+                                            echo '<input type="hidden" name="coupon_code" value="' . $coupon->copn_code . '">';
+                                        } else {
+                                            echo number_format(($total + $gst), 2);
+                                        }
+                                        ?>
+
                                     </td>
                                 </tr>
                             </table>
-                          
-                           
+
+
 
                             <input type="text" name="coupon" placeholder="Coupon Code" id="hq-fieldsize"/>
 
                             <button>Update Invoice</button>
-                          <?php echo $this->setting->hq_paypal;?>
-                            <?php echo $_POST['coupon'];?>
+
+                            <?php echo $invalid_code; ?>
+
                         </div>
 
                         <h6 style="color: #999;">Special Instructions:</h6> 
@@ -451,32 +472,35 @@ class shortcode extends HireQuote {
                     </form>
 
                 </div>
-      
-     
-        </div>
-        <?php
-    }
 
-    // Get Quote
-    public function submit_quote() {
-        $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
-        $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
-        $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
-        $cust_name = filter_input(INPUT_POST, 'cust_name');
-        $cust_address = filter_input(INPUT_POST, 'cust_address', FILTER_SANITIZE_STRING);
-        $cust_postcode = filter_input(INPUT_POST, 'cust_postcode');
-        $cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
-        $cust_email = filter_input(INPUT_POST, 'cust_email');
 
-        $opt = '';
-
-        foreach ($options as $option) {
-            $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-            $opt .= $opt_val . ';';
+            </div>
+            <?php
         }
 
-        // Order details
-        $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999">
+        // Get Quote
+        public function submit_quote() {
+            $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
+            $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
+            $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
+            $cust_name = filter_input(INPUT_POST, 'cust_name');
+            $cust_address = filter_input(INPUT_POST, 'cust_address', FILTER_SANITIZE_STRING);
+            $cust_postcode = filter_input(INPUT_POST, 'cust_postcode');
+            $cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
+            $cust_email = filter_input(INPUT_POST, 'cust_email');
+
+            $code = $_POST['coupon_code'];
+            $coupon = $this->wpdb->get_row("SELECT * FROM $this->coupons_tbl WHERE copn_code = '$code'");
+
+            $opt = '';
+
+            foreach ($options as $option) {
+                $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+                $opt .= $opt_val . ';';
+            }
+
+            // Order details
+            $odr_detail = '<table cellpadding="0" cellspacing="0" style="border: none; width: 100%; color: #999">
                             <tr>
                                 <td width="40%" style="border: none;">
                                     <img src="' . plugins_url('hire-quote/images/Rentobin-Logo.png') . '" alt="" width="220">
@@ -515,7 +539,7 @@ class shortcode extends HireQuote {
                             </tr>
                         </table>';
 
-        $odr_detail .= '<hr>
+            $odr_detail .= '<hr>
                         <div class="odr-detail-col" style="color: #999;">
                             <strong>Order Description</strong>
                             <table cellpadding="0" cellspacing="0" width="100%">
@@ -533,104 +557,129 @@ class shortcode extends HireQuote {
                                     <td><strong>Add Ons:</strong></td>
                                     <td>';
 
-        foreach ($options as $option) {
-            $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-            $odr_detail .= $option->opt_name . ': ' . $opt_val . '<br>';
-        }
+            foreach ($options as $option) {
+                $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+                $odr_detail .= $option->opt_name . ': ' . $opt_val . '<br>';
+            }
 
-        $odr_detail .= '</td>
+            $odr_detail .= '</td>
                                     <td class="hq-price" style="text-align: right;">';
 
-        $opt_t_cost = '';
-        foreach ($options as $option) {
-            $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
-            $odr_detail .= '$' . $opt_val * $option->opt_price . '<br>';
-            $opt_t_cost += $opt_val * $option->opt_price;
-        }
+            $opt_t_cost = '';
+            foreach ($options as $option) {
+                $opt_val = filter_input(INPUT_POST, 'opt_' . $option->opt_id);
+                $odr_detail .= '$' . $opt_val * $option->opt_price . '<br>';
+                $opt_t_cost += $opt_val * $option->opt_price;
+            }
 
-        $odr_detail .= '</td>
+            $odr_detail .= '</td>
                                 </tr>
                                 <tr style="background: #000; font-weight: bold;">
                                     <td></td>
                                     <td style="color: #fff;">
                                         TOTAL<br>
-                                        GST: (10%)<br>
-                                        Total Payable
-                                    </td>
-                                    <td class="hq-price" style="text-align: right; color: #fff;">';
-
-        $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
-        $gst = ($total * 10) / 100;
-
-        $odr_detail .= '$' . number_format($total, 2) . '<br>
-                                        $' . number_format($gst, 2) . '<br>
-                                        $' . number_format(($total + $gst), 2) . '
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <h6 style="font-size: 20px; color: #999;">Special Instructions:</h6> 
-                        <p style="color: #999;">NOTE: You have selected &acute;' . $cat->cat_name . '&acute; as your waste type. Please note that only following &acute;' . $cat->cat_name . '&acute; is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
-                        <p style="color: #999;"><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
-                        <p style="color: #999;"><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
-                        <p style="color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
-
-                        <h6 style="font-size: 20px; color: #999;">Payment Method: ' . $this->p_method . '</h6>';
-
-
-
-        $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email, 'cust_suburb' => $this->cust_city));
-
-        $last_id = $this->wpdb->insert_id;
-
-        $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id, 'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved', 'odr_full' => $odr_detail));
-
-        // User header
-        $user_headers = "MIME-Version: 1.0" . "\r\n";
-        $user_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $user_headers .= 'From: <' . $cust_email . '>' . "\r\n";
-
-        // Admin header
-        $admin_headers = "MIME-Version: 1.0" . "\r\n";
-        $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $admin_headers .= 'From: <' . $this->setting->hq_email . '>' . "\r\n";
-
-        // Mail
-        wp_mail($this->setting->hq_email, 'New order has been placed!', $odr_detail, $user_headers);
-        wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
-
-
-        echo '<div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>';
-
-        if ($this->p_method == 'PayPal') {
-            ?>
-            <form action='https://www.paypal.com/cgi-bin/webscr' method='post' name='frmPayPal1'>
-                <p style="text-align: center;">
-                <input type='hidden' name='business' value='<?php echo $this->setting->hq_paypal;?>'>
-                <input type='hidden' name='cmd' value='_xclick'>
-                <input type='hidden' name='item_name' value='<?php echo $product->prod_name; ?>'>
-                <input type='hidden' name='amount' value='<?php echo number_format(($total + $gst), 2) ?>'>
-                <input type='hidden' name='no_shipping' value='1'>
-                <input type='hidden' name='currency_code' value='USD'>
-                <input type='hidden' name='handling' value='0'>
-                <input type='hidden' name='cancel_return' value='http://rentobin.com.au'>
-                <input type='hidden' name='return' value='http://rentobin.com.au'>
-                <input type="image" src="https://www.sandbox.paypal.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                <img alt="" border="0" src="https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                </p>
-            </form>
-
-        <?php } else {
-            ?>
-            <p><strong>Direct Debit Account Details</srtong><br>
-                ACC Name: Rentobin Pty Ltd<br>
-                BANK: Bankwest<br>
-                BSB: 302162<br>
-                ACC NO: 0490279</p>
-                <?php
+                                        GST: (10%)<br>';
+            if ($coupon) {
+                $odr_detail .= 'Discount: (' . $coupon->copn_discount . '%)<br>';
             }
-        }
+            $odr_detail .= 'Total Payable
+            </td>
+            <td class = "hq-price" style = "text-align: right; color: #fff;">';
 
-    }
-    
+            $total = $opt_t_cost + $product->prod_rate + $this->add_days_price;
+            $gst = ($total * 10) / 100;
+
+            $odr_detail .= '$' . number_format($total, 2) . '<br>
+            $' . number_format($gst, 2) . '<br>';
+
+            if ($coupon) {
+                $discounted = (($total + $gst) * $coupon->copn_discount) / 100;
+                $odr_detail .= '-$' . number_format($discounted, 2) . '<br>';
+                $odr_detail .= '$' . number_format(($total + $gst) - $discounted, 2);
+            } else {
+                $odr_detail .= '$' . number_format(($total + $gst), 2);
+            }
+
+            $odr_detail .= '</td>
+            </tr>
+            </table>
+            </div>
+
+            <h6 style = "font-size: 20px; color: #999;">Special Instructions:</h6>
+            <p style = "color: #999;">NOTE: You have selected & acute;
+            ' . $cat->cat_name . '&acute;
+            as your waste type. Please note that only following & acute;
+            ' . $cat->cat_name . ' & acute;
+            is allowed. You may be liable to pay additional charges if the waste is found to be different from your selection.</p>
+            <p style = "color: #999;"><strong>Allowed:</strong> ' . $cat->cat_allowed . '</p>
+            <p style = "color: #999;"><strong>Not Allowed:</strong> ' . $cat->cat_not_allowed . '</p>
+            <p style = "color: #999;">Please see our ‘Terms and Conditions’ of hire.</p>
+
+            <h6 style = "font-size: 20px; color: #999;">Payment Method: ' . $this->p_method . '</h6>';
+
+
+            $this->wpdb->insert($this->customers_tbl, array('cust_name' => $cust_name, 'cust_address' => $cust_address, 'cust_postcode' => $cust_postcode, 'cust_phone' => $cust_phone, 'cust_email' => $cust_email, 'cust_suburb' => $this->cust_city));
+
+            $last_id = $this->wpdb->insert_id;
+
+            $this->wpdb->insert($this->orders_tbl, array('odr_cust_id' => $last_id, 'odr_prod_id' => $this->prod_id, 'odr_cat_id' => $this->cat_id, 'odr_options' => $opt, 'odr_d_date' => $this->d_date, 'odr_c_date' => $this->c_date, 'odr_pfr_time' => $this->prf_time, 'odr_postcode' => $cust_postcode, 'odr_status' => 'Unapproved', 'odr_full' => $odr_detail));
+
+            // User header
+            $user_headers = "MIME-Version: 1.0" . "\r\n";
+            $user_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $user_headers .= 'From: <' . $cust_email . '>' . "\r\n";
+
+            // Admin header
+            $admin_headers = "MIME-Version: 1.0" . "\r\n";
+            $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $admin_headers .= 'From: <' . $this->setting->hq_email . '>' . "\r\n";
+
+            // Mail
+            wp_mail($this->setting->hq_email, 'New order has been placed!', $odr_detail, $user_headers);
+            wp_mail($cust_email, 'Your order details at rentobin.com.au!', $odr_detail, $admin_headers);
+
+            // If method is paypal
+            if ($this->p_method == 'PayPal') {
+                ?>
+                <form action='https://www.paypal.com/cgi-bin/webscr' method='post' name='frmPayPal1'>
+                    <p style = "text-align: center;">
+                        <input type = 'hidden' name = 'business' value = '<?php echo $this->setting->hq_paypal; ?>'>
+                        <input type = 'hidden' name = 'cmd' value = '_xclick'>
+                        <input type = 'hidden' name = 'item_name' value = '<?php echo $product->prod_name; ?>'>
+                        <?php
+                        if ($coupon) {
+                            $discounted = (($total + $gst) * $coupon->copn_discount) / 100;
+                            ?>
+                            <input type = 'hidden' name = 'amount' value = '<?php echo number_format(($total + $gst) - $discounted, 2); ?>'>
+                        <?php
+                        } else { ?>
+                            <input type = 'hidden' name = 'amount' value = '<?php echo number_format(($total + $gst), 2); ?>'>
+                        <?php }
+                        ?>
+                        <input type = 'hidden' name = 'no_shipping' value = '1'>
+                        <input type = 'hidden' name = 'currency_code' value = 'USD'>
+                        <input type = 'hidden' name = 'handling' value = '0'>
+                        <input type = 'hidden' name = 'cancel_return' value = 'http://rentobin.com.au'>
+                        <input type = 'hidden' name = 'return' value = 'http://rentobin.com.au'>
+                        <input type = "image" src = "<?php echo plugins_url('hire-quote/images/express-checkout.png'); ?>" border = "0" name = "submit" alt = "PayPal - The safer, easier way to pay online!" style = "border: none; background: none;">
+                        <img alt = "" border = "0" src = "https://www.sandbox.paypal.com/en_US/i/scr/pixel.gif" width = "1" height = "1">
+                    </p>
+                </form>
+                <div class = "order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>
+                <?php
+                // If method is bank
+            } else {
+                ?>
+                <div class="order-ok">Thanks for your booking with RENTOBIN, your bin will be ready for drop off soon!</div>
+                <p>Please make the direct deposit to the account below, All orders are subject to clear payments.</p>
+                <p><strong>Bank Details</srtong><br>
+                        ACC Name: Rentobin Pty Ltd<br>
+                        BANK: Bankwest<br>
+                        BSB: 302162<br>
+                        ACC NO: 0490279</p>
+                        <?php
+                    }
+                }
+
+            }
+            
