@@ -423,7 +423,7 @@ class shortcode extends HireQuote {
                             </table>
                           
                            
-                            <input type="hidden" name="set_coupon" value="final_form">
+                            <input type="hidden" name="set_coupon" value="final_coupon">
                             <input type="text"  name="coupon"  placeholder="Coupon Code" id="hq-fieldsize"/>
                             <button>Update Invoice</button>
                           <?php echo $this->setting->hq_paypal;?>
