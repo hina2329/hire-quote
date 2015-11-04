@@ -483,11 +483,13 @@ class shortcode extends HireQuote {
             $product = $this->wpdb->get_row("SELECT * FROM $this->products_tbl WHERE prod_id = $this->prod_id");
             $options = $this->wpdb->get_results("SELECT * FROM $this->options_tbl");
             $cat = $this->wpdb->get_row("SELECT * FROM $this->categories_tbl WHERE cat_id = $this->cat_id");
+            $lastOrder = $this->wpdb->get_row("SELECT * FROM $this->orders_tbl ORDER BY odr_id DESC LIMIT 1");
             $cust_name = filter_input(INPUT_POST, 'cust_name');
             $cust_address = filter_input(INPUT_POST, 'cust_address', FILTER_SANITIZE_STRING);
             $cust_postcode = filter_input(INPUT_POST, 'cust_postcode');
             $cust_phone = filter_input(INPUT_POST, 'cust_phone', FILTER_SANITIZE_NUMBER_INT);
             $cust_email = filter_input(INPUT_POST, 'cust_email');
+            
 
             $code = $_POST['coupon_code'];
             $coupon = $this->wpdb->get_row("SELECT * FROM $this->coupons_tbl WHERE copn_code = '$code'");
@@ -632,7 +634,7 @@ class shortcode extends HireQuote {
             // Admin header
             $admin_headers = "MIME-Version: 1.0" . "\r\n";
             $admin_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-            $admin_headers .= 'From: Rentobin<' . $this->setting->hq_email . '>' . "\r\n";
+            $admin_headers .= 'From: Rentobin <' . $this->setting->hq_email . '>' . "\r\n";
 
             // Mail
             wp_mail($this->setting->hq_email, 'New order has been placed!', $odr_detail, $user_headers);
