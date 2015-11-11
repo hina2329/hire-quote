@@ -629,7 +629,7 @@ class shortcode extends HireQuote {
             // User header
             $user_headers = "MIME-Version: 1.0" . "\r\n";
             $user_headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-            $user_headers .= 'From: <' . $cust_email . '>' . "\r\n";
+            $user_headers .= 'From: Rentobin <' . $cust_email . '>' . "\r\n";
 
             // Admin header
             $admin_headers = "MIME-Version: 1.0" . "\r\n";
